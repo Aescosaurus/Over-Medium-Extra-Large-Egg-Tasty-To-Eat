@@ -10,9 +10,30 @@ Enemy::Enemy( const Vec2& pos,const TileMap& map,
 	coll( coll ),
 	hitbox( pos,float( size.x ),float( size.y ) ),
 	myBullets( bullets ),
-	shotTimer( 1.1f )
+	shotTimer( 1.1f ),
+	tilemap( map )
 {
-	UpdateTarget( map );
+	UpdateTarget( tilemap );
+}
+
+Enemy::Enemy( const Enemy& other )
+	:
+	Enemy( other.pos,other.tilemap,other.coll,other.myBullets )
+{
+	*this = other;
+}
+
+Enemy& Enemy::operator=( const Enemy& other )
+{
+	pos = other.pos;
+	target = other.target;
+	vel = other.vel;
+	hitbox = other.hitbox;
+	didCollide = other.didCollide;
+	shotTimer = other.shotTimer;
+	hp = other.hp;
+
+	return( *this );
 }
 
 void Enemy::Update( const TileMap& map,
@@ -21,7 +42,7 @@ void Enemy::Update( const TileMap& map,
 	// When you reach the tile you're going for, retarget
 	if( map.GetTilePos( pos ) == target || didCollide )
 	{
-		UpdateTarget( map );
+		UpdateTarget( tilemap );
 	}
 
 	// didCollide = coll.CheckCollision( pos,vel * dt );
@@ -33,7 +54,7 @@ void Enemy::Update( const TileMap& map,
 	{
 		shotTimer.Reset( Random::RangeF( minShotTime,maxShotTime ) );
 
-		myBullets.emplace_back( Bullet{ GetCenter(),playerPos } );
+		myBullets.emplace_back( Bullet{ GetCenter(),playerPos,bulletSpeed } );
 	}
 }
 
@@ -41,6 +62,21 @@ void Enemy::Draw( Graphics& gfx ) const
 {
 	gfx.DrawRect( int( pos.x ),int( pos.y ),
 		size.x,size.y,Colors::Red );
+}
+
+void Enemy::Attack()
+{
+	--hp;
+}
+
+const Rect& Enemy::GetRect() const
+{
+	return( hitbox );
+}
+
+bool Enemy::IsDead() const
+{
+	return( hp < 1 );
 }
 
 void Enemy::UpdateTarget( const TileMap& map )

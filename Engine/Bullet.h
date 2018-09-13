@@ -14,15 +14,16 @@ public:
 	};
 public:
 	Bullet() = delete;
-	Bullet( const Vec2& pos,const Vec2& target );
+	Bullet( const Vec2& pos,const Vec2& target,float speed );
 
 	void Update( const TileMap& map,float dt );
 	void Draw( Graphics& gfx ) const;
 
+	void Kill();
+
 	bool IsDead() const;
 	const Rect& GetRect() const;
 private:
-	static constexpr float speed = 70.0f;
 	Vec2 pos;
 	static constexpr Vei2 size = { 16,16 };
 	Rect hitbox;

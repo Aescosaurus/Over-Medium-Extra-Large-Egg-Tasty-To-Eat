@@ -28,7 +28,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
 	tiles( "Maps/Map1.lvl" ),
-	guy( { 150.0f,150.0f },coll ),
+	guy( { 150.0f,150.0f },coll,bullets ),
 	coll( tiles,gfx )
 {
 	const auto list = tiles.GetEnemies( "Maps/Map1.lvl" );
@@ -52,11 +52,40 @@ void Game::UpdateModel()
 	auto dt = FrameTimer::Mark();
 	if( dt > 0.5f ) dt = 0.0f;
 
-	guy.Update( wnd.kbd,tiles,coll,dt );
+	guy.Update( wnd.kbd,wnd.mouse,tiles,coll,dt );
 
-	for( auto& e : enemies )
+	for( auto it = enemies.begin(); it < enemies.end(); ++it )
 	{
+		auto& e = *it;
 		e.Update( tiles,guy.GetPos(),dt );
+
+		const auto& eRect = e.GetRect();
+		for( auto& b : bullets )
+		{
+			if( eRect.IsOverlappingWith( b.GetRect() ) )
+			{
+				b.Kill();
+				e.Attack();
+			}
+		}
+
+		if( e.IsDead() )
+		{
+			it = enemies.erase( it );
+			if( it == enemies.end() ) break;
+		}
+	}
+
+	for( auto it = bullets.begin(); it < bullets.end(); ++it )
+	{
+		auto& b = *it;
+		b.Update( tiles,dt );
+
+		if( b.IsDead() )
+		{
+			it = bullets.erase( it );
+			if( it == bullets.end() ) break;
+		}
 	}
 
 	const Rect& playerBox = guy.GetRect();
@@ -84,15 +113,11 @@ void Game::ComposeFrame()
 {
 	tiles.Draw( gfx );
 
-	for( const auto& e : enemies )
-	{
-		e.Draw( gfx );
-	}
+	for( const auto& e : enemies ) e.Draw( gfx );
 
-	for( const auto& b : enemyBullets )
-	{
-		b.Draw( gfx );
-	}
+	for( const auto& b : enemyBullets ) b.Draw( gfx );
+
+	for( const auto& b : bullets ) b.Draw( gfx );
 
 	// Draw outline
 	// const auto pos = tiles.GetTilePos( guy.GetPos() );
