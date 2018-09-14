@@ -29,6 +29,7 @@
 #include "Enemy.h"
 #include <vector>
 #include "Bullet.h"
+#include <string>
 
 class Game
 {
@@ -48,6 +49,7 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+	std::string curLevel; // this has to precede any var that uses it.
 	Collideable coll;
 	TileMap tiles;
 	Player guy;

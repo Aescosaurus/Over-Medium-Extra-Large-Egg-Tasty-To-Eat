@@ -24,6 +24,7 @@ public:
 	void Draw( Graphics& gfx ) const;
 
 	void Attack();
+	void SetTopLeft( const Vec2& newPos );
 
 	const Vec2& GetPos() const;
 	const Rect& GetRect() const;

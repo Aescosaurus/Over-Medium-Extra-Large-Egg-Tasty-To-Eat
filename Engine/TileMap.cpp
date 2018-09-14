@@ -1,6 +1,7 @@
 #include "TileMap.h"
 #include <fstream>
 #include <cassert>
+#include <fstream>
 
 TileMap::TileMap( const std::string& fileName )
 {
@@ -59,7 +60,8 @@ void TileMap::LoadFile( const std::string& fileName )
 		}
 		else if( c != ',' )
 		{
-			if( c == 'E' )
+			if( c == char( Token::Enemy ) ||
+				c == char( Token::Player ) )
 			{
 				tiles.emplace_back( TileType::Empty );
 			}
@@ -79,7 +81,7 @@ void TileMap::LoadFile( const std::string& fileName )
 	tileDim.y = Graphics::ScreenHeight / height;
 }
 
-std::vector<Vei2> TileMap::GetEnemies( const std::string& fileName ) const
+std::vector<Vei2> TileMap::FindAllInstances( const std::string& fileName,Token search ) const
 {
 	std::ifstream in( fileName );
 	assert( in.good() );
@@ -92,7 +94,7 @@ std::vector<Vei2> TileMap::GetEnemies( const std::string& fileName ) const
 	{
 		if( c == ',' ) continue;
 
-		if( c == 'E' )
+		if( c == char( search ) )
 		{
 			positions.emplace_back( Vei2( x * tileDim.x,y * tileDim.y ) );
 		}
@@ -106,6 +108,36 @@ std::vector<Vei2> TileMap::GetEnemies( const std::string& fileName ) const
 	}
 
 	return( positions );
+}
+
+Vei2 TileMap::FindFirstInstance( const std::string & fileName,Token search ) const
+{
+	std::ifstream in( fileName );
+	assert( in.good() );
+
+	auto y = 0;
+	auto x = 0;
+	for( char c = in.get(); in.good(); c = in.get() )
+	{
+		if( c == ',' ) continue;
+
+		if( c == char( search ) )
+		{
+			// Here it is!
+			return( Vei2( ( x - 1 ) * tileDim.x,y * tileDim.y ) );
+		}
+		if( c == '\n' )
+		{
+			x = 0;
+			++y;
+		}
+
+		++x;
+	}
+
+	// You will never get this, means the token doesn't exist.
+	assert( false );
+	return( Vei2{ -1,-1 } );
 }
 
 TileMap::TileType TileMap::GetTile( int x,int y ) const
@@ -153,4 +185,22 @@ int TileMap::GetHeight() const
 int TileMap::GetTileNum() const
 {
 	return( int( tiles.size() ) );
+}
+
+const Vei2& TileMap::GetTileSize() const
+{
+	return( tileDim );
+}
+
+int TileMap::CountNLevels( const std::string& name ) const
+{
+	std::string start = name + "0.lvl";
+	int i;
+	for( i = 0; i < 9999; ++i )
+	{
+		std::ifstream in( start );
+		if( !in.good() ) break;
+		start = name + std::to_string( i ) + ".lvl";
+	}
+	return( i - 1 );
 }

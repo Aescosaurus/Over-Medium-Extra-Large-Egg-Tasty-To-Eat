@@ -27,11 +27,16 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	tiles( "Maps/Map1.lvl" ),
-	guy( { 150.0f,150.0f },coll,bullets ),
+	curLevel( "Maps/Map0.lvl" ),
+	tiles( curLevel ),
+	guy( { -50.0f,-50.0f },coll,bullets ),
 	coll( tiles,gfx )
 {
-	const auto list = tiles.GetEnemies( "Maps/Map1.lvl" );
+	guy.SetTopLeft( Vec2( tiles.FindFirstInstance( curLevel,
+		TileMap::Token::Player ) + tiles.GetTileSize() / 2 ) );
+
+	const auto list = tiles.FindAllInstances( curLevel,
+		TileMap::Token::Enemy );
 	for( const Vei2& thePos : list )
 	{
 		enemies.emplace_back( Enemy{ Vec2( thePos ),

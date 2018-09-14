@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include "Graphics.h"
+#include <string>
 
 class TileMap
 {
@@ -12,6 +13,11 @@ public:
 		Empty,
 		Wall
 	};
+	enum class Token
+	{
+		Player = int( 'P' ),
+		Enemy = int( 'E' )
+	};
 public:
 	TileMap( const std::string& fileName );
 
@@ -20,7 +26,10 @@ public:
 
 	void SetTile( int x,int y,TileType type );
 	void LoadFile( const std::string& fileName );
-	std::vector<Vei2> GetEnemies( const std::string& fileName ) const;
+
+	std::vector<Vei2> FindAllInstances( const std::string& fileName,Token search ) const;
+	Vei2 FindFirstInstance( const std::string& fileName,Token search ) const;
+	int CountNLevels( const std::string& name ) const;
 
 	TileType GetTile( int x,int y ) const;
 	Vei2 GetTilePos( const Vec2& screenPos ) const;
@@ -30,6 +39,7 @@ public:
 	int GetWidth() const;
 	int GetHeight() const;
 	int GetTileNum() const;
+	const Vei2& GetTileSize() const;
 private:
 	int width; // Number of tiles left-right.
 	int height; // Number of tiles up-down.

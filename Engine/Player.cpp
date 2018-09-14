@@ -59,6 +59,13 @@ void Player::Attack()
 {
 }
 
+void Player::SetTopLeft( const Vec2& newPos )
+{
+	pos = newPos;
+
+	hitbox.MoveTo( pos );
+}
+
 const Vec2& Player::GetPos() const
 {
 	return( pos );
