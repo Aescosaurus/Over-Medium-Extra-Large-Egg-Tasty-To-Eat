@@ -104,6 +104,13 @@ Surface::Surface( int width,int height )
 {
 }
 
+Surface::Surface( const std::string& filename,int width,int height )
+	:
+	Surface( width,height )
+{
+	*this = Surface( filename ).GetExpanded( width,height );
+}
+
 Surface::Surface( Surface&& donor )
 {
 	*this = std::move( donor );

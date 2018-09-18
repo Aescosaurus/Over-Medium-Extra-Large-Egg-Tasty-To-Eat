@@ -2,6 +2,9 @@
 #include "Random.h"
 #include "Collideable.h"
 #include "Random.h"
+#include "SpriteEffect.h"
+
+const Surface Enemy::spriteSheet( "Images/EggEnemyAnim.bmp",128 * 4,16 * 4 );
 
 Enemy::Enemy( const Vec2& pos,const TileMap& map,
 	const Collideable& coll,std::vector<Bullet>& bullets )
@@ -11,7 +14,8 @@ Enemy::Enemy( const Vec2& pos,const TileMap& map,
 	hitbox( pos,float( size.x ),float( size.y ) ),
 	myBullets( bullets ),
 	shotTimer( 1.1f ),
-	tilemap( map )
+	tilemap( map ),
+	running( 0,0,size.x,size.y,8,spriteSheet,0.2f,Colors::Magenta )
 {
 	UpdateTarget( tilemap );
 }
@@ -32,6 +36,7 @@ Enemy& Enemy::operator=( const Enemy& other )
 	didCollide = other.didCollide;
 	shotTimer = other.shotTimer;
 	hp = other.hp;
+	running = other.running;
 
 	return( *this );
 }
@@ -56,12 +61,18 @@ void Enemy::Update( const TileMap& map,
 
 		myBullets.emplace_back( Bullet{ GetCenter(),playerPos,bulletSpeed } );
 	}
+
+	running.Update( dt * Random::RangeF( 0.9,1.1 ) );
 }
 
 void Enemy::Draw( Graphics& gfx ) const
 {
-	gfx.DrawRect( int( pos.x ),int( pos.y ),
-		size.x,size.y,Colors::Red );
+	// gfx.DrawRect( int( pos.x ),int( pos.y ),
+	// 	size.x,size.y,Colors::Red );
+	running.Draw( Vei2( pos ),gfx,
+		SpriteEffect::Chroma{ Colors::Magenta },
+		vel.x < 0.0f );
+	// gfx.DrawHitbox( GetRect() );
 }
 
 void Enemy::Attack()

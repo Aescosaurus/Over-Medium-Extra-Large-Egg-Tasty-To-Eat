@@ -14,6 +14,14 @@ public:
 	void Update( float dt );
 	void Draw( const Vei2& pos,Graphics& gfx ) const;
 	void Draw( const Vei2& pos,Graphics& gfx,const RectI& clip ) const;
+	template<typename E>
+	void Draw( const Vei2& pos,Graphics& gfx,E effect,bool reversed = false ) const
+	{
+		gfx.DrawSprite( int( pos.x ),int( pos.y ),
+			frames[iCurFrame],Graphics
+			::GetScreenRect(),sprite,
+			effect,reversed );
+	}
 
 	bool IsFinished() const;
 private:

@@ -7,6 +7,7 @@
 #include <vector>
 #include "Bullet.h"
 #include "Timer.h"
+#include "Anim.h"
 
 class Enemy
 {
@@ -30,7 +31,7 @@ private:
 	void UpdateTarget( const TileMap& map );
 	Vec2 GetCenter() const;
 private:
-	static constexpr Vei2 size = { 32,32 };
+	static constexpr Vei2 size = { 64,64 };
 	Vec2 pos;
 	Vei2 target;
 	Vec2 vel;
@@ -47,4 +48,6 @@ private:
 	static constexpr float bulletSpeed = 70.0f;
 	int hp = 4;
 	// YO!  If you add any new members, make sure to update copy assignment.
+	static const Surface spriteSheet;
+	Anim running;
 };
