@@ -27,21 +27,13 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	curLevel( "Maps/Map0.lvl" ),
+	curLevel( "Maps/_Tutorial.lvl" ),
 	tiles( curLevel ),
 	guy( { -50.0f,-50.0f },coll,bullets ),
-	coll( tiles,gfx )
+	coll( tiles,gfx ),
+	stairwell( { -50.0f,-50.0f } )
 {
-	guy.SetTopLeft( Vec2( tiles.FindFirstInstance( curLevel,
-		TileMap::Token::Player ) + tiles.GetTileSize() / 2 ) );
-
-	const auto list = tiles.FindAllInstances( curLevel,
-		TileMap::Token::Enemy );
-	for( const Vei2& thePos : list )
-	{
-		enemies.emplace_back( Enemy{ Vec2( thePos ),
-			tiles,coll,enemyBullets } );
-	}
+	ChangeLevel( curLevel );
 }
 
 void Game::Go()
@@ -58,6 +50,11 @@ void Game::UpdateModel()
 	if( dt > 0.5f ) dt = 0.0f;
 
 	guy.Update( wnd.kbd,wnd.mouse,tiles,coll,dt );
+
+	if( stairwell.GetRect().IsOverlappingWith( guy.GetRect() ) )
+	{
+		ChangeLevel( tiles.GetRandLvlName() );
+	}
 
 	for( auto it = enemies.begin(); it < enemies.end(); ++it )
 	{
@@ -76,6 +73,10 @@ void Game::UpdateModel()
 
 		if( e.IsDead() )
 		{
+			if( enemies.size() == 1 )
+			{
+				stairwell.Spawn( it->GetPos() );
+			}
 			it = enemies.erase( it );
 			if( it == enemies.end() ) break;
 		}
@@ -118,6 +119,8 @@ void Game::ComposeFrame()
 {
 	tiles.Draw( gfx );
 
+	stairwell.Draw( gfx );
+
 	for( const auto& e : enemies ) e.Draw( gfx );
 
 	for( const auto& b : enemyBullets ) b.Draw( gfx );
@@ -134,4 +137,26 @@ void Game::ComposeFrame()
 	// 	const auto msPos = tiles.GetTilePos( wnd.mouse.GetPos() );
 	// 	tiles.DrawTileAt( msPos.x,msPos.y,Colors::Green,gfx );
 	// }
+}
+
+void Game::ChangeLevel( const std::string& nextLevel )
+{
+	guy.SetTopLeft( Vec2( tiles.FindFirstInstance( nextLevel,
+		TileMap::Token::Player ) + tiles.GetTileSize() / 2 ) );
+
+	const auto list = tiles.FindAllInstances( nextLevel,
+		TileMap::Token::Enemy );
+	for( const Vei2& thePos : list )
+	{
+		enemies.emplace_back( Enemy{ Vec2( thePos ),
+			tiles,coll,enemyBullets } );
+	}
+
+	stairwell.Despawn();
+
+	// Enemies list should already be empty.
+	bullets.clear();
+	enemyBullets.clear();
+
+	tiles.LoadFile( nextLevel );
 }

@@ -80,6 +80,11 @@ void Enemy::Attack()
 	--hp;
 }
 
+const Vec2& Enemy::GetPos() const
+{
+	return( pos );
+}
+
 const Rect& Enemy::GetRect() const
 {
 	return( hitbox );

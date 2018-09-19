@@ -25,6 +25,7 @@ public:
 	
 	void Attack();
 
+	const Vec2& GetPos() const;
 	const Rect& GetRect() const;
 	bool IsDead() const;
 private:
@@ -46,8 +47,8 @@ private:
 	static constexpr float minShotTime = 1.4f;
 	static constexpr float maxShotTime = 2.1f;
 	static constexpr float bulletSpeed = 70.0f;
-	int hp = 4;
-	// YO!  If you add any new members, make sure to update copy assignment.
+	int hp = 5;
 	static const Surface spriteSheet;
 	Anim running;
+	// YO!  If you add any new members, make sure to update copy assignment.
 };

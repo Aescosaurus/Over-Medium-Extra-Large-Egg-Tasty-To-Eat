@@ -40,6 +40,7 @@ public:
 	int GetHeight() const;
 	int GetTileNum() const;
 	const Vei2& GetTileSize() const;
+	std::string GetRandLvlName() const;
 private:
 	int width; // Number of tiles left-right.
 	int height; // Number of tiles up-down.

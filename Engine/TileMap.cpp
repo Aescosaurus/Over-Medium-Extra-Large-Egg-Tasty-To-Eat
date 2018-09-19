@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cassert>
 #include <fstream>
+#include "Random.h"
 
 TileMap::TileMap( const std::string& fileName )
 {
@@ -190,6 +191,12 @@ int TileMap::GetTileNum() const
 const Vei2& TileMap::GetTileSize() const
 {
 	return( tileDim );
+}
+
+std::string TileMap::GetRandLvlName() const
+{
+	return( "Maps/Map" + std::to_string( Random
+		::RangeI( 0,CountNLevels( "Maps/Map" ) - 1 ) ) + ".lvl" );
 }
 
 int TileMap::CountNLevels( const std::string& name ) const

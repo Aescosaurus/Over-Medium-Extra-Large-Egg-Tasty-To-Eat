@@ -30,6 +30,7 @@
 #include <vector>
 #include "Bullet.h"
 #include <string>
+#include "Stairs.h"
 
 class Game
 {
@@ -43,6 +44,7 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	void ChangeLevel( const std::string& nextLevel );
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -53,6 +55,7 @@ private:
 	Collideable coll;
 	TileMap tiles;
 	Player guy;
+	Stairs stairwell;
 	std::vector<Enemy> enemies;
 	std::vector<Bullet> bullets;
 	std::vector<Bullet> enemyBullets;

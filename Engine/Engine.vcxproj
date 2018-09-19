@@ -162,6 +162,7 @@
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="SpriteEffect.h" />
+    <ClInclude Include="Stairs.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="Timer.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="Poly.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Stairs.cpp" />
     <ClCompile Include="Surface.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MaxSpeed</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MaxSpeed</Optimization>
