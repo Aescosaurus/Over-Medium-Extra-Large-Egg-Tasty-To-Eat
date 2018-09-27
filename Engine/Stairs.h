@@ -13,6 +13,8 @@ public:
 
 	void Spawn( const Vec2& whereTo );
 	void Despawn();
+	void Activate();
+	void Deactivate();
 
 	const Rect& GetRect() const;
 private:

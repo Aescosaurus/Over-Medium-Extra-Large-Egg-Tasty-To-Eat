@@ -31,6 +31,8 @@
 #include "Bullet.h"
 #include <string>
 #include "Stairs.h"
+#include "KeyWall.h"
+#include "Key.h"
 
 class Game
 {
@@ -59,5 +61,8 @@ private:
 	std::vector<Enemy> enemies;
 	std::vector<Bullet> bullets;
 	std::vector<Bullet> enemyBullets;
+	std::vector<KeyWall> keyWalls;
+	Key theKey = Key{ { -50,-50 } };
+	bool gotKey = false;
 	/********************************/
 };

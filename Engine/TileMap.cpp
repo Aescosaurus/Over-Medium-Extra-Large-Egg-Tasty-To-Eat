@@ -62,7 +62,10 @@ void TileMap::LoadFile( const std::string& fileName )
 		else if( c != ',' )
 		{
 			if( c == char( Token::Enemy ) ||
-				c == char( Token::Player ) )
+				c == char( Token::Player ) ||
+				c == char( Token::Stairs ) ||
+				c == char( Token::KeyWall ) ||
+				c == char( Token::Key ) )
 			{
 				tiles.emplace_back( TileType::Empty );
 			}
@@ -78,8 +81,8 @@ void TileMap::LoadFile( const std::string& fileName )
 	width = tempWidth;
 	height = tempHeight;
 
-	tileDim.x = Graphics::ScreenWidth / width;
-	tileDim.y = Graphics::ScreenHeight / height;
+	// tileDim.x = Graphics::ScreenWidth / width;
+	// tileDim.y = Graphics::ScreenHeight / height;
 }
 
 std::vector<Vei2> TileMap::FindAllInstances( const std::string& fileName,Token search ) const
@@ -97,7 +100,7 @@ std::vector<Vei2> TileMap::FindAllInstances( const std::string& fileName,Token s
 
 		if( c == char( search ) )
 		{
-			positions.emplace_back( Vei2( x * tileDim.x,y * tileDim.y ) );
+			positions.emplace_back( Vei2( x * tileDim.x - tileDim.x,y * tileDim.y ) );
 		}
 		if( c == '\n' )
 		{
@@ -186,11 +189,6 @@ int TileMap::GetHeight() const
 int TileMap::GetTileNum() const
 {
 	return( int( tiles.size() ) );
-}
-
-const Vei2& TileMap::GetTileSize() const
-{
-	return( tileDim );
 }
 
 std::string TileMap::GetRandLvlName() const

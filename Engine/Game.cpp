@@ -75,7 +75,8 @@ void Game::UpdateModel()
 		{
 			if( enemies.size() == 1 )
 			{
-				stairwell.Spawn( it->GetPos() );
+				// stairwell.Spawn( it->GetPos() );
+				stairwell.Activate();
 			}
 			it = enemies.erase( it );
 			if( it == enemies.end() ) break;
@@ -113,11 +114,22 @@ void Game::UpdateModel()
 			if( it == enemyBullets.end() ) break;
 		}
 	}
+
+	if( guy.GetRect().IsOverlappingWith( theKey.GetRect() ) )
+	{
+		gotKey = true;
+		theKey.Despawn();
+
+		keyWalls[0].Unlock();
+	}
 }
 
 void Game::ComposeFrame()
 {
 	tiles.Draw( gfx );
+
+	for( const auto& kWall : keyWalls ) kWall.Draw( gfx );
+	theKey.Draw( gfx );
 
 	stairwell.Draw( gfx );
 
@@ -141,9 +153,12 @@ void Game::ComposeFrame()
 
 void Game::ChangeLevel( const std::string& nextLevel )
 {
+	tiles.LoadFile( nextLevel );
+
 	guy.SetTopLeft( Vec2( tiles.FindFirstInstance( nextLevel,
 		TileMap::Token::Player ) + tiles.GetTileSize() / 2 ) );
 
+	// Create all enemies.
 	const auto list = tiles.FindAllInstances( nextLevel,
 		TileMap::Token::Enemy );
 	for( const Vei2& thePos : list )
@@ -152,11 +167,21 @@ void Game::ChangeLevel( const std::string& nextLevel )
 			tiles,coll,enemyBullets } );
 	}
 
-	stairwell.Despawn();
+	// Create all key walls.
+	const auto tempWalls = tiles.FindAllInstances( nextLevel,
+		TileMap::Token::KeyWall );
+	for( const Vei2& thePos : tempWalls )
+	{
+		keyWalls.emplace_back( KeyWall{ thePos,tiles } );
+	}
+
+	theKey.SpawnAt( tiles.FindFirstInstance( nextLevel,TileMap::Token::Key ) );
+
+	stairwell.Spawn( tiles.FindFirstInstance( nextLevel,
+		TileMap::Token::Stairs ) );
+	stairwell.Deactivate();
 
 	// Enemies list should already be empty.
 	bullets.clear();
 	enemyBullets.clear();
-
-	tiles.LoadFile( nextLevel );
 }

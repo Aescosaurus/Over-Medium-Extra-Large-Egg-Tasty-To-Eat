@@ -32,6 +32,16 @@ void Stairs::Despawn()
 	pos = { -50.0f,-50.0f };
 }
 
+void Stairs::Activate()
+{
+	activated = true;
+}
+
+void Stairs::Deactivate()
+{
+	activated = false;
+}
+
 const Rect& Stairs::GetRect() const
 {
 	return( hitbox );

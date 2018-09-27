@@ -13,10 +13,14 @@ public:
 		Empty,
 		Wall
 	};
+	// If you modify this make sure to update in LoadFile.
 	enum class Token
 	{
 		Player = int( 'P' ),
-		Enemy = int( 'E' )
+		Enemy = int( 'E' ),
+		Stairs = int( 'S' ),
+		KeyWall = int( 'L' ),
+		Key = int( 'K' )
 	};
 public:
 	TileMap( const std::string& fileName );
@@ -39,11 +43,12 @@ public:
 	int GetWidth() const;
 	int GetHeight() const;
 	int GetTileNum() const;
-	const Vei2& GetTileSize() const;
+	static constexpr Vei2 GetTileSize() { return( tileDim ); }
 	std::string GetRandLvlName() const;
 private:
 	int width; // Number of tiles left-right.
 	int height; // Number of tiles up-down.
-	Vei2 tileDim; // Size of each tile on screen.
+	// Vei2 tileDim; // Size of each tile on screen.
+	static constexpr Vei2 tileDim = { 40,40 };
 	std::vector<TileType> tiles;
 };
