@@ -1,4 +1,5 @@
 #include "Stairs.h"
+#include "SpriteEffect.h"
 
 Stairs::Stairs( const Vec2& pos )
 	:
@@ -12,8 +13,11 @@ void Stairs::Draw( Graphics& gfx ) const
 {
 	if( activated )
 	{
-		gfx.DrawRect( int( pos.x ),int( pos.y ),
-			size.x,size.y,Colors::Cyan );
+		// gfx.DrawRect( int( pos.x ),int( pos.y ),
+		// 	size.x,size.y,Colors::Cyan );
+
+		gfx.DrawSprite( int( pos.x ),int( pos.y ),
+			mySpr,SpriteEffect::Copy{} );
 
 		// gfx.DrawHitbox( hitbox );
 	}
@@ -45,4 +49,9 @@ void Stairs::Deactivate()
 const Rect& Stairs::GetRect() const
 {
 	return( hitbox );
+}
+
+bool Stairs::IsActive() const
+{
+	return( activated );
 }

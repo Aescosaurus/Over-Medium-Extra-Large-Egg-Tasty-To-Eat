@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "SpriteEffect.h"
 
 Player::Player( const Vec2& pos,const Collideable& coll,
 	std::vector<Bullet>& bullets )
@@ -51,8 +52,10 @@ void Player::Update( const Keyboard& kbd,const Mouse& ms,
 void Player::Draw( Graphics& gfx ) const
 {
 	const auto drawPos = Vei2( GetCenter() );
-	gfx.DrawRect( drawPos.x,drawPos.y,
-		size.x,size.y,Colors::Green );
+	// gfx.DrawRect( drawPos.x,drawPos.y,
+	// 	size.x,size.y,Colors::Green );
+	gfx.DrawSprite( drawPos.x,drawPos.y,mySpr,
+		SpriteEffect::Chroma{ Colors::Magenta } );
 }
 
 void Player::Attack()

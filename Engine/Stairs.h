@@ -3,6 +3,7 @@
 #include "Vec2.h"
 #include "Rect.h"
 #include "Graphics.h"
+#include "Surface.h"
 
 class Stairs
 {
@@ -17,9 +18,11 @@ public:
 	void Deactivate();
 
 	const Rect& GetRect() const;
+	bool IsActive() const;
 private:
 	static constexpr Vei2 size = { 32,32 };
 	Vec2 pos;
 	Rect hitbox;
 	bool activated = false;
+	const Surface mySpr = { "Images/Stairs.bmp",size.x,size.y };
 };

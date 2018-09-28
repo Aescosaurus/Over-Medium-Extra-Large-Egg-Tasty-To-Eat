@@ -23,16 +23,10 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-#include "TileMap.h"
-#include "Player.h"
-#include "Collideable.h"
-#include "Enemy.h"
-#include <vector>
-#include "Bullet.h"
-#include <string>
-#include "Stairs.h"
-#include "KeyWall.h"
-#include "Key.h"
+
+#include "Button.h"
+#include "Campaign.h"
+#include "LevelEditor.h"
 
 class Game
 {
@@ -46,23 +40,26 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-	void ChangeLevel( const std::string& nextLevel );
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	std::string curLevel; // this has to precede any var that uses it.
-	Collideable coll;
-	TileMap tiles;
-	Player guy;
-	Stairs stairwell;
-	std::vector<Enemy> enemies;
-	std::vector<Bullet> bullets;
-	std::vector<Bullet> enemyBullets;
-	std::vector<KeyWall> keyWalls;
-	Key theKey = Key{ { -50,-50 } };
-	bool gotKey = false;
+	enum class GameState
+	{
+		Menu,
+		Campaign,
+		Unlimited,
+		LevelEditor
+	};
+	GameState curState = GameState::Menu;
+	Campaign theMainGame;
+	LevelEditor theLevelEditor;
+
+	const Vei2 scrCenter = Graphics::GetScreenRect().GetCenter();
+	Button playCampaign = { scrCenter - Vei2{ 0,200 },"Play Campaign" };
+	Button playUnlimited = { scrCenter - Vei2{ 0,100 },"Climb the Tower" };
+	Button startLevelEditor = { scrCenter,"Level Editor" };
 	/********************************/
 };

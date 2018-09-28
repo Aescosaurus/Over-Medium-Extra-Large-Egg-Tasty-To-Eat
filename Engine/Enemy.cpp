@@ -72,7 +72,7 @@ void Enemy::Draw( Graphics& gfx ) const
 	running.Draw( Vei2( pos ),gfx,
 		SpriteEffect::Chroma{ Colors::Magenta },
 		vel.x < 0.0f );
-	// gfx.DrawHitbox( GetRect() );
+	gfx.DrawHitbox( hitbox );
 }
 
 void Enemy::Attack()

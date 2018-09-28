@@ -10,6 +10,7 @@
 #include <vector>
 #include "Bullet.h"
 #include "Mouse.h"
+#include "Surface.h"
 
 // Works like top down now, but can be modified
 //  to use platformer controls.
@@ -32,7 +33,7 @@ private:
 	const Vec2 GetCenter() const;
 private:
 	Vec2 pos;
-	static constexpr Vei2 size = { 24,24 }; // from 32,32
+	static constexpr Vei2 size = { 32,32 }; // from 24, 24
 	static constexpr float speed = 140.0f;
 	const Collideable& coll;
 	Rect hitbox;
@@ -40,4 +41,5 @@ private:
 	std::vector<Bullet>& myBullets;
 	Timer shotTimer;
 	static constexpr float refireTime = 0.21f;
+	const Surface mySpr = { "Images/Player.bmp",size.x,size.y };
 };

@@ -11,6 +11,7 @@ public:
 	Surface( const std::string& filename );
 	Surface( const std::wstring& fileName );
 	Surface( const Surface& other,const RectI& clip );
+	Surface( const std::string& fileName,const RectI& clip );
 	Surface( int width,int height );
 	Surface( const std::string& filename,int width,int height );
 

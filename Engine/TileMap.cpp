@@ -3,6 +3,9 @@
 #include <cassert>
 #include <fstream>
 #include "Random.h"
+#include "SpriteEffect.h"
+
+const Surface TileMap::wallSpr = { "Images/Wall1.bmp",40,40 };
 
 TileMap::TileMap( const std::string& fileName )
 {
@@ -18,9 +21,11 @@ void TileMap::Draw( Graphics& gfx ) const
 			const auto tile = GetTile( x,y );
 			if( tile == TileType::Wall )
 			{
-				gfx.DrawRect( x * tileDim.x,y * tileDim.y,
-					tileDim.x,tileDim.y,
-					Colors::Gray );
+				// gfx.DrawRect( x * tileDim.x,y * tileDim.y,
+				// 	tileDim.x,tileDim.y,
+				// 	Colors::Gray );
+				gfx.DrawSprite( x * tileDim.x,y * tileDim.y,
+					wallSpr,SpriteEffect::Copy{} );
 			}
 		}
 	}
@@ -83,6 +88,11 @@ void TileMap::LoadFile( const std::string& fileName )
 
 	// tileDim.x = Graphics::ScreenWidth / width;
 	// tileDim.y = Graphics::ScreenHeight / height;
+}
+
+std::string TileMap::GetNextLvlName()
+{
+	return( "Maps/Map" + std::to_string( curLevel++ ) + ".lvl" );
 }
 
 std::vector<Vei2> TileMap::FindAllInstances( const std::string& fileName,Token search ) const

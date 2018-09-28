@@ -96,6 +96,12 @@ Surface::Surface( const Surface& other,const RectI& clip )
 	}
 }
 
+Surface::Surface( const std::string& fileName,const RectI& clip )
+{
+	const Surface temp = Surface{ fileName };
+	*this = Surface{ temp,clip };
+}
+
 Surface::Surface( int width,int height )
 	:
 	width( width ),

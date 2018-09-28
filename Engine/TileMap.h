@@ -4,6 +4,7 @@
 #include <string>
 #include "Graphics.h"
 #include <string>
+#include "Surface.h"
 
 class TileMap
 {
@@ -30,6 +31,7 @@ public:
 
 	void SetTile( int x,int y,TileType type );
 	void LoadFile( const std::string& fileName );
+	std::string GetNextLvlName();
 
 	std::vector<Vei2> FindAllInstances( const std::string& fileName,Token search ) const;
 	Vei2 FindFirstInstance( const std::string& fileName,Token search ) const;
@@ -45,10 +47,14 @@ public:
 	int GetTileNum() const;
 	static constexpr Vei2 GetTileSize() { return( tileDim ); }
 	std::string GetRandLvlName() const;
+public:
+	static constexpr Vei2 nTiles = { 20,15 };
 private:
 	int width; // Number of tiles left-right.
 	int height; // Number of tiles up-down.
 	// Vei2 tileDim; // Size of each tile on screen.
 	static constexpr Vei2 tileDim = { 40,40 };
 	std::vector<TileType> tiles;
+	int curLevel = 0;
+	static const Surface wallSpr;
 };
