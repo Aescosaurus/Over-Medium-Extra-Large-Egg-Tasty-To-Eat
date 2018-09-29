@@ -47,9 +47,12 @@ void Game::UpdateModel()
 		playUnlimited.Update( wnd.mouse );
 		startLevelEditor.Update( wnd.mouse );
 
+		quitGame.Update( wnd.mouse );
+
 		if( playCampaign.IsDown() ) curState = GameState::Campaign;
 		if( playUnlimited.IsDown() ) curState = GameState::Unlimited;
 		if( startLevelEditor.IsDown() ) curState = GameState::LevelEditor;
+		if( quitGame.IsDown() ) wnd.Kill();
 		break;
 	case GameState::Campaign:
 		theMainGame.UpdateAll( wnd.kbd,wnd.mouse );
@@ -57,7 +60,11 @@ void Game::UpdateModel()
 	case GameState::Unlimited:
 		break;
 	case GameState::LevelEditor:
-		theLevelEditor.Update( wnd.mouse );
+		theLevelEditor.Update( wnd.mouse,wnd.kbd );
+		if( theLevelEditor.CheckReturning( wnd.mouse ) )
+		{
+			curState = GameState::Menu;
+		}
 		break;
 	default:
 		assert( false );
@@ -73,6 +80,7 @@ void Game::ComposeFrame()
 		playCampaign.Draw( gfx );
 		playUnlimited.Draw( gfx );
 		startLevelEditor.Draw( gfx );
+		quitGame.Draw( gfx );
 		break;
 	case GameState::Campaign:
 		theMainGame.DrawAll();

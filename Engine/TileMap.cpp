@@ -162,9 +162,9 @@ TileMap::TileType TileMap::GetTile( int x,int y ) const
 Vei2 TileMap::GetTilePos( const Vec2& screenPos ) const
 {
 	const auto x = int( std::floor( screenPos.x ) /
-		( float( Graphics::ScreenWidth ) / width ) );
+		( float( Graphics::GameScreenWidth ) / width ) );
 	const auto y = int( std::floor( screenPos.y ) /
-		( float( Graphics::ScreenHeight ) / height ) );
+		( float( Graphics::GameScreenHeight ) / height ) );
 
 	return( Vei2{ x,y } );
 }

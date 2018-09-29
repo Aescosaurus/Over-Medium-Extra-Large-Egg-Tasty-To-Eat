@@ -5,6 +5,8 @@
 #include "TileMap.h"
 #include "Surface.h"
 #include "Mouse.h"
+#include "Keyboard.h"
+#include "Button.h"
 
 class LevelEditor
 {
@@ -22,8 +24,10 @@ private:
 public:
 	LevelEditor();
 
-	void Update( const Mouse& ms );
+	void Update( const Mouse& ms,const Keyboard& kbd );
 	void Draw( Graphics& gfx ) const;
+
+	bool CheckReturning( const Mouse& ms );
 private:
 	void PutTile( int x,int y,char c );
 
@@ -38,8 +42,32 @@ private:
 	const Surface floorSpr = { "Images/Floor.bmp",40,40 };
 	const Surface wallSpr = { "Images/Wall1.bmp",40,40 };
 	const Surface playerSpr = { "Images/Player.bmp",32,32 };
-	const Surface enemySpr = { "Images/EggEnemyAnim.bmp",RectI{ 0,0,16,16 } };
+	const Surface enemySpr = { { "Images/EggEnemyAnim.bmp",RectI{ { 0,0 },16,16 } },32,32 };
 	const Surface stairsSpr = { "Images/Stairs.bmp",32,32 };
 	const Surface keyWallSpr = { "Images/KeyWall.bmp",40,40 };
 	const Surface keySpr = { "Images/Key.bmp",32,32 };
+
+	static constexpr Vei2 menuCenter = { Graphics::GameScreenWidth +
+		( Graphics::ScreenWidth - Graphics::GameScreenWidth ) / 2,0 };
+	static constexpr int halfMenuWidth = menuCenter.x - Graphics::GameScreenWidth;
+	static constexpr Vei2 qMenuW = { halfMenuWidth / 2,0 }; // quarter menu width
+
+	Button backToMenu = { menuCenter + Vei2{ 0,32 },"Menu" };
+
+	static constexpr Vei2 menuTopLeft = { Graphics::GameScreenWidth,64 };
+	static constexpr int bBSize = 48; // Big button size including padding
+	static constexpr int sBSize = 40; // Small button size with padding
+	static constexpr int mPadding = 16;
+	static constexpr int start = 64 + 16;
+
+	ImageButton floor = { menuCenter - qMenuW + Vei2( 0,start + mPadding ),floorSpr };
+	ImageButton wall = { menuCenter + qMenuW + Vei2( 0,start + mPadding ),wallSpr };
+	ImageButton player = { menuCenter - qMenuW + Vei2( 0,start + mPadding * 2 + bBSize ),playerSpr };
+	ImageButton enemy = { menuCenter + qMenuW + Vei2( 0,start + mPadding * 2 + bBSize ),enemySpr };
+	ImageButton stairs = { menuCenter - qMenuW + Vei2( 0,start + mPadding * 3 + bBSize + sBSize ),stairsSpr };
+	ImageButton keyWall = { menuCenter + qMenuW + Vei2( 0,start + mPadding * 3 + bBSize + sBSize ),keyWallSpr };
+	ImageButton key = { menuCenter - qMenuW + Vei2( 0,start + mPadding * 4 + bBSize + sBSize * 2 ),keySpr };
+	// Man that was gross let's hope I come up with a better way to do this next time.
+
+	static constexpr RectI wndRect = { { 0,0 },Graphics::GameScreenWidth,Graphics::GameScreenHeight };
 };

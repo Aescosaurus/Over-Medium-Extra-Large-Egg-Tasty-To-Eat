@@ -117,6 +117,13 @@ Surface::Surface( const std::string& filename,int width,int height )
 	*this = Surface( filename ).GetExpanded( width,height );
 }
 
+Surface::Surface( const Surface& other,int width,int height )
+	:
+	Surface( other )
+{
+	*this = other.GetExpanded( width,height );
+}
+
 Surface::Surface( Surface&& donor )
 {
 	*this = std::move( donor );
@@ -171,6 +178,11 @@ int Surface::GetWidth() const
 int Surface::GetHeight() const
 {
 	return height;
+}
+
+Vei2 Surface::GetSize() const
+{
+	return Vei2{ width,height };
 }
 
 RectI Surface::GetRect() const

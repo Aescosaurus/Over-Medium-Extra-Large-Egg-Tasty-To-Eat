@@ -61,5 +61,7 @@ private:
 	Button playCampaign = { scrCenter - Vei2{ 0,200 },"Play Campaign" };
 	Button playUnlimited = { scrCenter - Vei2{ 0,100 },"Climb the Tower" };
 	Button startLevelEditor = { scrCenter,"Level Editor" };
+
+	Button quitGame = { scrCenter + Vei2{ 0,200 },"Quit" };
 	/********************************/
 };

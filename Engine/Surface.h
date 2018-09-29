@@ -14,6 +14,7 @@ public:
 	Surface( const std::string& fileName,const RectI& clip );
 	Surface( int width,int height );
 	Surface( const std::string& filename,int width,int height );
+	Surface( const Surface& other,int width,int height );
 
 	Surface( const Surface& ) = default;
 	Surface& operator=( const Surface& ) = default;
@@ -39,6 +40,7 @@ public:
 	Color GetPixel( int x,int y ) const;
 	int GetWidth() const;
 	int GetHeight() const;
+	Vei2 GetSize() const;
 	RectI GetRect() const;
 	Surface GetExpanded( int width,int height ) const;
 	Surface GetInterpolated( int width,int height ) const;
