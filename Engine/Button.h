@@ -18,6 +18,7 @@ public:
 	virtual void Draw( Graphics& gfx ) const;
 
 	bool IsDown() const;
+	static const Font& GetFont();
 protected:
 	Button( const Vei2& pos,const Vei2& size );
 private:

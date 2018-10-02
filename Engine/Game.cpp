@@ -21,6 +21,7 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include <cassert>
+#include "SpriteEffect.h"
 
 Game::Game( MainWindow& wnd )
 	:

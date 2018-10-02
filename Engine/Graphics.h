@@ -61,12 +61,11 @@ public:
 	}
 	Color& GetPixel( int x,int y ) const;
 	void PutPixel( int x,int y,Color c );
-	void PutPixel( int x,int y,Color c,unsigned char alpha );
-	void PutPixel( int x,int y,Color c,float alpha );
+	void PutPixelAlpha( int x,int y,Color c,float alpha );
 	void DrawRect( int x,int y,int width,int height,Color c );
+	void DrawRectAlpha( int x,int y,int width,int height,Color c,float alpha );
 	void DrawRectDim( int x1,int y1,int x2,int y2,Color c );
 	void DrawCircle( int x,int y,int radius,Color c );
-	void DrawLineOld( int x0,int y0,int x1,int y1,Color c );
 	void DrawLine( Vec2 p0,Vec2 p1,Color c );
 	template<typename R>
 	void DrawHitbox( const Rect_<R>& hitbox,Color c = { 255,160,0 } )

@@ -91,7 +91,11 @@ void Campaign::UpdateAll( const Keyboard& kbd,
 		gotKey = true;
 		theKey.Despawn();
 
-		keyWalls[0].Unlock();
+		// keyWalls[0].Unlock();
+		for( auto& keyWall : keyWalls )
+		{
+			keyWall.Unlock();
+		}
 	}
 }
 
@@ -130,6 +134,7 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 	}
 
 	// Create all key walls.
+	keyWalls.clear();
 	const auto tempWalls = tiles.FindAllInstances( nextLevel,
 		TileMap::Token::KeyWall );
 	for( const Vei2& thePos : tempWalls )

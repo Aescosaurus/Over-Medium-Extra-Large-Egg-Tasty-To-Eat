@@ -115,19 +115,19 @@ public:
 
 	static constexpr Vec2_ Up()
 	{
-		return Vec2_{ 0.0f,-1.0f };
+		return Vec2_{ T( 0 ),T( -1 ) };
 	}
 	static constexpr Vec2_ Down()
 	{
-		return Vec2_{ 0.0f,1.0f };
+		return Vec2_{ T( 0 ),T( 1 ) };
 	}
 	static constexpr Vec2_ Left()
 	{
-		return Vec2_{ -1.0f,0.0f };
+		return Vec2_{ T( -1 ),T( 0 ) };
 	}
 	static constexpr Vec2_ Right()
 	{
-		return Vec2_{ 1.0f,0.0f };
+		return Vec2_{ T( 1 ),T( 0 ) };
 	}
 
 	static constexpr float Lerp( float s,float e,float t )

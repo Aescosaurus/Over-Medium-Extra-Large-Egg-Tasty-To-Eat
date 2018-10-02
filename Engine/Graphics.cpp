@@ -322,25 +322,6 @@ void Graphics::BeginFrame()
 	memset( pSysBuffer,0u,sizeof( Color ) * Graphics::ScreenHeight * Graphics::ScreenWidth );
 }
 
-void Graphics::PutPixel( int x,int y,Color c,unsigned char alpha )
-{
-	const Color srcPixel = c;
-	const Color dstPixel = pSysBuffer[y * ScreenWidth + x];
-
-	const Color blendedPixel = {
-		unsigned char( ( dstPixel.GetR() + srcPixel.GetR() ) / 2 ),
-		unsigned char( ( dstPixel.GetG() + srcPixel.GetG() ) / 2 ),
-		unsigned char( ( dstPixel.GetB() + srcPixel.GetB() ) / 2 )
-	};
-
-	pSysBuffer[Graphics::ScreenWidth * y + x] = blendedPixel;
-}
-
-void Graphics::PutPixel( int x,int y,Color c,float alpha )
-{
-	PutPixel( x,y,c,unsigned char( alpha * 255 ) );
-}
-
 Color& Graphics::GetPixel( int x,int y ) const
 {
 	return pSysBuffer[y * ScreenWidth + x];
@@ -355,6 +336,20 @@ void Graphics::PutPixel( int x,int y,Color c )
 	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
 }
 
+void Graphics::PutPixelAlpha( int x,int y,Color c,float alpha )
+{
+	const Color c2 = c;
+	const Color c1 = GetPixel( x,y );
+
+	typedef unsigned char uchar;
+	const Color blend = Colors
+		::MakeRGB( uchar( float( c2.GetR() - c1.GetR() ) * alpha ) + c1.GetR(),
+		uchar( float( c2.GetG() - c1.GetG() ) * alpha ) + c1.GetG(),
+		uchar( float( c2.GetB() - c1.GetB() ) * alpha ) + c1.GetB() );
+
+	PutPixel( x,y,blend );
+}
+
 void Graphics::DrawRect( int x,int y,int width,int height,Color c )
 {
 	for( int i = y; i < y + height; ++i )
@@ -362,6 +357,17 @@ void Graphics::DrawRect( int x,int y,int width,int height,Color c )
 		for( int j = x; j < x + width; ++j )
 		{
 			PutPixel( j,i,c );
+		}
+	}
+}
+
+void Graphics::DrawRectAlpha( int x,int y,int width,int height,Color c,float alpha )
+{
+	for( int yY = y; yY < height; ++yY )
+	{
+		for( int xX = x; xX < width; ++xX )
+		{
+			PutPixelAlpha( xX,yY,c,alpha );
 		}
 	}
 }
@@ -390,82 +396,6 @@ void Graphics::DrawCircle( int x,int y,int radius,Color c )
 			{
 				PutPixel( j,i,c );
 			}
-		}
-	}
-}
-
-void Graphics::DrawLineOld( int x0,int y0,int x1,int y1,Color c )
-{
-	bool steep = ( abs( y1 - y0 ) > abs( x1 - x0 ) );
-
-	if( steep )
-	{
-		std::swap( x0,y0 );
-		std::swap( x1,y1 );
-	}
-	if( x0 > x1 )
-	{
-		std::swap( x0,x1 );
-		std::swap( y0,y1 );
-	}
-
-	float dx = float( x1 - x0 );
-	float dy = float( y1 - y0 );
-	float gradient = dy / dx;
-	if( dx == 0.0 )
-	{
-		gradient = 1.0;
-	}
-
-	float xend = float( round( x0 ) );
-	float yend = y0 + gradient * ( xend - x0 );
-	float xgap = 1 - x0 + 0.5f - floor( x0 + 0.5f );
-	float xpxl1 = xend;
-	float ypxl1 = floor( yend );
-	if( steep )
-	{
-		PutPixel( int( ypxl1 ),int( xpxl1 ),c,float( 1 - yend - floor( yend ) * xgap ) );
-		PutPixel( int( ypxl1 + 1 ),int( xpxl1 ),c,float( yend - floor( yend ) * xgap ) );
-	}
-	else
-	{
-		PutPixel( int( xpxl1 ),int( ypxl1 ),c,float( 1 - yend - floor( yend ) * xgap ) );
-		PutPixel( int( xpxl1 ),int( ypxl1 + 1 ),c,float( yend - floor( yend ) * xgap ) );
-	}
-	float intery = yend + gradient;
-
-	xend = float( round( x1 ) );
-	yend = y1 + gradient * ( xend - x1 );
-	xgap = x1 + 0.5f - floor( x1 + 0.5f );
-	float xpxl2 = xend;
-	float ypxl2 = floor( yend );
-	if( steep )
-	{
-		PutPixel( int( ypxl2 ),int( xpxl2 ),c,float( 1 - yend - floor( yend ) * xgap ) );
-		PutPixel( int( ypxl2 + 1 ),int( xpxl2 ),c,float( yend - floor( yend ) * xgap ) );
-	}
-	else
-	{
-		PutPixel( int( xpxl2 ),int( ypxl2 ),c,float( 1 - yend - floor( yend ) * xgap ) );
-		PutPixel( int( xpxl2 ),int( ypxl2 + 1 ),c,float( yend - floor( yend ) * xgap ) );
-	}
-
-	if( steep )
-	{
-		for( int x = int( xpxl1 + 1 ); x < int( xpxl2 - 1 ); ++x )
-		{
-			PutPixel( int( floor( intery ) ),x,c,float( 1 - intery - floor( intery ) ) );
-			PutPixel( int( floor( intery ) + 1 ),x,c,float( intery - floor( intery ) ) );
-			intery = intery + gradient;
-		}
-	}
-	else
-	{
-		for( int x = int( xpxl1 + 1 ); x < int( xpxl2 - 1 ); ++x )
-		{
-			PutPixel( x,int( floor( intery ) ),c,float( 1 - intery - floor( intery ) ) );
-			PutPixel( x,int( floor( intery ) + 1 ),c,float( intery - floor( intery ) ) );
-			intery = intery + gradient;
 		}
 	}
 }

@@ -47,6 +47,11 @@ bool Button::IsDown() const
 	return( clicking );
 }
 
+const Font& Button::GetFont()
+{
+	return( drawFont );
+}
+
 Button::Button( const Vei2& pos,const Vei2& size )
 	:
 	size( size ),

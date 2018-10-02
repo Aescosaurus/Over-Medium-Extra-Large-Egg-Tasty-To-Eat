@@ -12,11 +12,13 @@ void Poly::Draw( Graphics& gfx ) const
 	{
 		const Vec2 pos1 = i->Rotation( angle ) + pos;
 		const Vec2 pos2 = ( i + 1 )->Rotation( angle ) + pos;
-		gfx.DrawLineOld( int( pos1.x ),int( pos1.y ),int( pos2.x ),int( pos2.y ),c );
+		// gfx.DrawLineOld( int( pos1.x ),int( pos1.y ),int( pos2.x ),int( pos2.y ),c );
+		gfx.DrawLine( pos1,pos2,c );
 	}
 	const Vec2 pos1 = vertices.back().Rotation( angle ) + pos;
 	const Vec2 pos2 = vertices.front().Rotation( angle ) + pos;
-	gfx.DrawLineOld( int( pos1.x ),int( pos1.y ),int( pos2.x ),int( pos2.y ),c );
+	// gfx.DrawLineOld( int( pos1.x ),int( pos1.y ),int( pos2.x ),int( pos2.y ),c );
+	gfx.DrawLine( pos1,pos2,c );
 }
 
 void Poly::Rotate( float amount )

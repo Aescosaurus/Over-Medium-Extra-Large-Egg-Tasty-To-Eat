@@ -7,6 +7,7 @@
 #include "Mouse.h"
 #include "Keyboard.h"
 #include "Button.h"
+#include <string>
 
 class LevelEditor
 {
@@ -29,12 +30,16 @@ public:
 
 	bool CheckReturning( const Mouse& ms );
 private:
-	void PutTile( int x,int y,char c );
+	void PutTile( int x,int y,Tile2Char c );
 
-	char GetTile( int x,int y ) const;
+	void PublishLevel();
+	void WriteToFile( const std::string& fileName ) const;
+	std::string GetNewestFileName() const;
+
+	Tile2Char GetTile( int x,int y ) const;
 	const Surface* const Tile2Surf( Tile2Char tileType ) const;
 private:
-	std::vector<char> tiles;
+	std::vector<Tile2Char> tiles;
 	static constexpr Vei2 nTiles = TileMap::nTiles;
 	static constexpr Vei2 tileSize = TileMap::GetTileSize();
 	Tile2Char brush = Tile2Char::Wall;
@@ -53,6 +58,7 @@ private:
 	static constexpr Vei2 qMenuW = { halfMenuWidth / 2,0 }; // quarter menu width
 
 	Button backToMenu = { menuCenter + Vei2{ 0,32 },"Menu" };
+	Button saveMap = { menuCenter + Vei2{ 0,64 * 8 },"Save" };
 
 	static constexpr Vei2 menuTopLeft = { Graphics::GameScreenWidth,64 };
 	static constexpr int bBSize = 48; // Big button size including padding
@@ -70,4 +76,8 @@ private:
 	// Man that was gross let's hope I come up with a better way to do this next time.
 
 	static constexpr RectI wndRect = { { 0,0 },Graphics::GameScreenWidth,Graphics::GameScreenHeight };
+
+	float fadeProgress = 0.0f;
+	static constexpr float fadeSpeed = 0.0076f;
+	const Font& textFont;
 };

@@ -1,19 +1,39 @@
 #include "LevelEditor.h"
 #include <cassert>
 #include "SpriteEffect.h"
+#include <fstream>
+#include "FrameTimer.h"
 
 LevelEditor::LevelEditor()
+	:
+	textFont( Button::GetFont() )
 {
 	const auto nTotalTiles = nTiles.x * nTiles.y;
 	tiles.reserve( nTotalTiles );
-	for( int i = 0; i < nTotalTiles; ++i )
+	// for( int i = 0; i < nTotalTiles; ++i )
+	// {
+	// 	tiles.emplace_back( char( Tile2Char::Empty ) );
+	// }
+
+	for( int y = 0; y < nTiles.y; ++y )
 	{
-		tiles.emplace_back( char( Tile2Char::Empty ) );
+		for( int x = 0; x < nTiles.x; ++x )
+		{
+			auto fill = Tile2Char::Empty;
+			if( x == 0 || y == 0 ||
+				x == nTiles.x - 1 || y == nTiles.y - 1 )
+			{
+				fill = Tile2Char::Wall;
+			}
+			tiles.emplace_back( fill );
+		}
 	}
 }
 
 void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 {
+	const float dt = FrameTimer::Mark();
+
 	auto tempPos = ms.GetPos();
 
 	while( tempPos.x >= Graphics::GameScreenWidth ) --tempPos.x;
@@ -29,6 +49,8 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	// else if( kbd.KeyIsPressed( 'S' ) ) brush = Tile2Char::Enemy;
 	// else if( kbd.KeyIsPressed( 'D' ) ) brush = Tile2Char::Stairs;
 
+	saveMap.Update( ms );
+
 	floor.Update( ms );
 	wall.Update( ms );
 	player.Update( ms );
@@ -37,7 +59,8 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	keyWall.Update( ms );
 	key.Update( ms );
 
-	if( floor.IsDown() ) brush = Tile2Char::Empty;
+	if( saveMap.IsDown() ) PublishLevel();
+	else if( floor.IsDown() ) brush = Tile2Char::Empty;
 	else if( wall.IsDown() ) brush = Tile2Char::Wall;
 	else if( player.IsDown() ) brush = Tile2Char::Player;
 	else if( enemy.IsDown() ) brush = Tile2Char::Enemy;
@@ -47,9 +70,15 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 
 	if( ms.LeftIsPressed() && wndRect.ContainsPoint( ms.GetPos() ) )
 	{
-		const auto tSize = TileMap::GetTileSize();
+		static constexpr auto tSize = TileMap::GetTileSize();
 		const auto realPos = Vei2{ brushPos.x / tSize.x,brushPos.y / tSize.y };
-		PutTile( realPos.x,realPos.y,char( brush ) );
+		PutTile( realPos.x,realPos.y,brush );
+	}
+
+	if( fadeProgress > 0.0f )
+	{
+		fadeProgress -= fadeSpeed * dt * 60.0f;
+		if( fadeProgress < 0.0f ) fadeProgress = 0.0f;
 	}
 }
 
@@ -76,6 +105,7 @@ void LevelEditor::Draw( Graphics& gfx ) const
 	}
 
 	backToMenu.Draw( gfx );
+	saveMap.Draw( gfx );
 	floor.Draw( gfx );
 	wall.Draw( gfx );
 	player.Draw( gfx );
@@ -87,9 +117,29 @@ void LevelEditor::Draw( Graphics& gfx ) const
 	const Surface* const brushSpr = Tile2Surf( brush );
 	gfx.DrawSprite( brushPos.x,brushPos.y,*brushSpr,
 		SpriteEffect::Chroma{ Colors::Magenta } );
-	gfx.DrawHitbox( brushSpr->GetRect().GetMovedBy( brushPos ),Colors::Green );
+
+	auto brushRect = brushSpr->GetRect().GetMovedBy( brushPos );
+	static constexpr auto tSize = TileMap::GetTileSize();
+	const auto realPos = Vei2{ brushPos.x / tSize.x,brushPos.y / tSize.y };
+	if( realPos.x == 0 || realPos.x == nTiles.x ||
+		realPos.y == 0 || realPos.y == nTiles.y ||
+		brushRect.bottom >= 600 )
+	{
+		brushRect = brushRect.GetExpanded( -1 );
+	}
+
+	gfx.DrawHitbox( brushRect,Colors::Green );
 
 	// gfx.DrawLine( menuCenter + Vei2{ 0,1 },menuCenter + Vei2{ 0,Graphics::ScreenHeight - 1 },Colors::Red );
+
+	// This should go on top of pretty much everything.
+	if( fadeProgress > 0.0f )
+	{
+		textFont.DrawText( "Saved Successfully!",
+			{ 150,150 },Colors::White,
+			SpriteEffect::SubstituteFade{ Colors::White,
+			Colors::White,fadeProgress },gfx );
+	}
 }
 
 bool LevelEditor::CheckReturning( const Mouse& ms )
@@ -99,12 +149,53 @@ bool LevelEditor::CheckReturning( const Mouse& ms )
 	return( backToMenu.IsDown() );
 }
 
-void LevelEditor::PutTile( int x,int y,char c )
+void LevelEditor::PutTile( int x,int y,Tile2Char c )
 {
 	tiles[y * nTiles.x + x] = c;
 }
 
-char LevelEditor::GetTile( int x,int y ) const
+void LevelEditor::PublishLevel()
+{
+	const auto name = GetNewestFileName();
+	WriteToFile( name );
+	fadeProgress = 1.0f;
+}
+
+void LevelEditor::WriteToFile( const std::string& fileName ) const
+{
+	std::ofstream out( fileName );
+	assert( out.good() );
+
+	for( int y = 0; y < nTiles.y; ++y )
+	{
+		for( int x = 0; x < nTiles.x; ++x )
+		{
+			out << char( GetTile( x,y ) );
+			if( x < nTiles.x - 1 ) out << ',';
+		}
+		out << '\n';
+	}
+}
+
+std::string LevelEditor::GetNewestFileName() const
+{
+	const std::string baseName = "Maps/Map";
+	for( int i = 0; true; ++i )
+	{
+		const std::string name = baseName + std::to_string( i ) + ".lvl";
+		const std::ifstream test( name );
+
+		if( !test.good() )
+		{
+			return( baseName + std::to_string( i ) + ".lvl" );
+		}
+	}
+	// You should *really* never get this.
+	assert( false );
+	return( baseName );
+}
+
+LevelEditor::Tile2Char LevelEditor::GetTile( int x,int y ) const
 {
 	return( tiles[y * nTiles.x + x] );
 }
