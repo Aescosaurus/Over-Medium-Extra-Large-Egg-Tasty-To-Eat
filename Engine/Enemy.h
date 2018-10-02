@@ -48,7 +48,11 @@ private:
 	static constexpr float maxShotTime = 2.1f;
 	static constexpr float bulletSpeed = 70.0f;
 	int hp = 5;
+	// static const Surface spriteSheet;
+	// Anim running;
 	static const Surface spriteSheet;
-	Anim running;
+	Anim legsRunning;
+	std::vector<Anim> bodyCracking;
+	int bodyBreakIndex = 0;
 	// YO!  If you add any new members, make sure to update copy assignment.
 };

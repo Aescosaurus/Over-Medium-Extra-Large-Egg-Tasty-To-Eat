@@ -171,9 +171,11 @@ void LevelEditor::WriteToFile( const std::string& fileName ) const
 		for( int x = 0; x < nTiles.x; ++x )
 		{
 			out << char( GetTile( x,y ) );
+			// Don't have commas at the end of each line.
 			if( x < nTiles.x - 1 ) out << ',';
 		}
-		out << '\n';
+		// Make sure you don't have a blank line at the end.
+		if( y < nTiles.y - 1 ) out << '\n';
 	}
 }
 

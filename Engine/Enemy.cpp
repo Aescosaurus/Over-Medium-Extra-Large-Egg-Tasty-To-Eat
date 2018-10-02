@@ -4,7 +4,8 @@
 #include "Random.h"
 #include "SpriteEffect.h"
 
-const Surface Enemy::spriteSheet( "Images/EggEnemyAnim.bmp",128 * 4,16 * 4 );
+// const Surface Enemy::spriteSheet( "Images/EggEnemyAnim.bmp",128 * 4,16 * 4 );
+const Surface Enemy::spriteSheet( "Images/EggEnemyAnim.bmp",160 * 4,32 * 4 );
 
 Enemy::Enemy( const Vec2& pos,const TileMap& map,
 	const Collideable& coll,std::vector<Bullet>& bullets )
@@ -15,8 +16,15 @@ Enemy::Enemy( const Vec2& pos,const TileMap& map,
 	myBullets( bullets ),
 	shotTimer( 1.1f ),
 	tilemap( map ),
-	running( 0,0,size.x,size.y,8,spriteSheet,0.2f,Colors::Magenta )
+	// running( 0,0,size.x,size.y,8,spriteSheet,0.2f,Colors::Magenta ),
+	legsRunning( 0,16 * 4,size.x,size.y,8,spriteSheet,0.2f,Colors::Magenta )
 {
+	for( int i = 0; i < 5; ++i )
+	{
+		// bodyCracking( 0,0,size.x,size.y,10,spriteSheet,1.0f,Colors::Magenta )
+		bodyCracking.emplace_back( Anim{ 32 * 4 * i,0,
+			size.x,size.y,2,spriteSheet,0.2f } );
+	}
 	UpdateTarget( tilemap );
 }
 
@@ -36,7 +44,9 @@ Enemy& Enemy::operator=( const Enemy& other )
 	didCollide = other.didCollide;
 	shotTimer = other.shotTimer;
 	hp = other.hp;
-	running = other.running;
+	// running = other.running;
+	legsRunning = other.legsRunning;
+	bodyCracking = other.bodyCracking;
 
 	return( *this );
 }
@@ -62,22 +72,31 @@ void Enemy::Update( const TileMap& map,
 		myBullets.emplace_back( Bullet{ GetCenter(),playerPos,bulletSpeed } );
 	}
 
-	running.Update( dt * Random::RangeF( 0.9,1.1 ) );
+	// running.Update( dt * Random::RangeF( 0.9,1.1 ) );
+	const auto rngOffset = Random::RangeF( 0.9f,1.1f );
+	legsRunning.Update( dt * rngOffset );
+	bodyCracking[bodyBreakIndex].Update( dt * rngOffset );
 }
 
 void Enemy::Draw( Graphics& gfx ) const
 {
-	// gfx.DrawRect( int( pos.x ),int( pos.y ),
-	// 	size.x,size.y,Colors::Red );
-	running.Draw( Vei2( pos ),gfx,
-		SpriteEffect::Chroma{ Colors::Magenta },
-		vel.x < 0.0f );
-	gfx.DrawHitbox( hitbox );
+	// running.Draw( Vei2( pos ),gfx,
+	// 	SpriteEffect::Chroma{ Colors::Magenta },
+	// 	vel.x < 0.0f );
+
+	const auto chromaEffect = SpriteEffect::Chroma{ Colors::Magenta };
+	legsRunning.Draw( Vei2( pos ),gfx,
+		chromaEffect,vel.x < 0.0f );
+	bodyCracking[bodyBreakIndex].Draw( Vei2( pos ),gfx,
+		chromaEffect,vel.x < 0.0f );
+
+	// gfx.DrawHitbox( hitbox );
 }
 
 void Enemy::Attack()
 {
 	--hp;
+	++bodyBreakIndex;
 }
 
 const Vec2& Enemy::GetPos() const
