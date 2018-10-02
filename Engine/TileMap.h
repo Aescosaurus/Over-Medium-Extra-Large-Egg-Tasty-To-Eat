@@ -57,4 +57,5 @@ private:
 	std::vector<TileType> tiles;
 	int curLevel = 0;
 	static const Surface wallSpr;
+	static const Surface groundSpr;
 };

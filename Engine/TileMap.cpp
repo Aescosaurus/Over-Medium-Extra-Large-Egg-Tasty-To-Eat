@@ -6,6 +6,7 @@
 #include "SpriteEffect.h"
 
 const Surface TileMap::wallSpr = { "Images/Wall1.bmp",40,40 };
+const Surface TileMap::groundSpr = { "Images/Floor.bmp",40,40 };
 
 TileMap::TileMap( const std::string& fileName )
 {
@@ -19,7 +20,15 @@ void TileMap::Draw( Graphics& gfx ) const
 		for( int x = 0; x < width; ++x )
 		{
 			const auto tile = GetTile( x,y );
-			if( tile == TileType::Wall )
+			if( tile == TileType::Empty )
+			{
+				// This lags so much in debug mode.
+#if NDEBUG
+				gfx.DrawSprite( x * tileDim.x,y * tileDim.y,
+					groundSpr,SpriteEffect::Copy{} );
+#endif
+			}
+			else if( tile == TileType::Wall )
 			{
 				// gfx.DrawRect( x * tileDim.x,y * tileDim.y,
 				// 	tileDim.x,tileDim.y,
@@ -124,7 +133,7 @@ std::vector<Vei2> TileMap::FindAllInstances( const std::string& fileName,Token s
 	return( positions );
 }
 
-Vei2 TileMap::FindFirstInstance( const std::string & fileName,Token search ) const
+Vei2 TileMap::FindFirstInstance( const std::string& fileName,Token search ) const
 {
 	std::ifstream in( fileName );
 	assert( in.good() );
@@ -140,7 +149,7 @@ Vei2 TileMap::FindFirstInstance( const std::string & fileName,Token search ) con
 			// Here it is!
 			return( Vei2( ( x - 1 ) * tileDim.x,y * tileDim.y ) );
 		}
-		if( c == '\n' )
+		else if( c == '\n' )
 		{
 			x = 0;
 			++y;

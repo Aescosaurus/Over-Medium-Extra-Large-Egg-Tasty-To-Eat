@@ -121,8 +121,9 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 {
 	tiles.LoadFile( nextLevel );
 
-	guy.SetTopLeft( Vec2( tiles.FindFirstInstance( nextLevel,
-		TileMap::Token::Player ) + tiles.GetTileSize() / 2 ) );
+	const auto guyPos = Vec2( tiles.FindFirstInstance( nextLevel,
+		TileMap::Token::Player ) + tiles.GetTileSize() / 2 );
+	guy.SetTopLeft( guyPos );
 
 	// Create all enemies.
 	const auto list = tiles.FindAllInstances( nextLevel,
