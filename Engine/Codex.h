@@ -18,29 +18,25 @@ private:
 	class Entry
 	{
 	public:
-		Entry( const std::wstring& key,const T* pResource )
+		Entry( const std::string& key,const T* pResource )
 			:
 			key( key ),
 			pResource( pResource )
 		{}
-		std::wstring key;
+		std::string key;
 		// this pointer owns the resource on the heap
 		// put the resources on the heap to keep them STABLE
 		const T* pResource;
 	};
 public:
+	// retrieve a ptr to resource based on string (load if not exist)
 	static const T* Retrieve( const std::string& key )
 	{
-		std::wstring wrongString( fileName.length(),L' ' );
-
-		std::copy( fileName.begin(),fileName.end(),wrongString.begin() );
-
-		return( Retrieve( wrongString ) );
-	}
-	// retrieve a ptr to resource based on string (load if not exist)
-	static const T* Retrieve( const std::wstring& key )
-	{
 		return Get()._Retrieve( key );
+	}
+	static const Surface* RetrieveSurf( const std::string& key,const Vei2& expandedAmount )
+	{
+		return( Get()._RetrieveSurf( key,expandedAmount ) );
 	}
 	// remove all entries from codex
 	static void Purge()
@@ -57,11 +53,11 @@ private:
 		}
 	}
 	// retrieve a ptr to resource based on string (load if not exist)
-	const T* _Retrieve( const std::wstring& key )
+	const T* _Retrieve( const std::string& key )
 	{
 		// find position of resource OR where resource should be (with bin search)
 		auto i = std::lower_bound( entries.begin(),entries.end(),key,
-			[]( const Entry& e,const std::wstring& key )
+			[]( const Entry& e,const std::string& key )
 		{
 			return e.key < key;
 		}
@@ -74,6 +70,20 @@ private:
 			i = entries.emplace( i,key,new T( key ) );
 		}
 		// return ptr to resource in codex
+		return i->pResource;
+	}
+	const Surface* _RetrieveSurf( const std::string& key,const Vei2& expandedSize )
+	{
+		auto i = std::lower_bound( entries.begin(),entries.end(),key,
+			[]( const Entry& e,const std::string& key )
+		{
+			return e.key < key;
+		}
+		);
+		if( i == entries.end() || i->key != key )
+		{
+			i = entries.emplace( i,key,new Surface( key,expandedSize.x,expandedSize.y ) );
+		}
 		return i->pResource;
 	}
 	// remove all entries from codex

@@ -11,6 +11,7 @@
 #include "Bullet.h"
 #include "Mouse.h"
 #include "Surface.h"
+#include "Codex.h"
 
 // Works like top down now, but can be modified
 //  to use platformer controls.
@@ -41,5 +42,6 @@ private:
 	std::vector<Bullet>& myBullets;
 	Timer shotTimer;
 	static constexpr float refireTime = 0.21f;
-	const Surface mySpr = { "Images/Player.bmp",size.x,size.y };
+	// const Surface mySpr = { "Images/Player.bmp",size.x,size.y };
+	const Surface* const mySpr = Codex<Surface>::RetrieveSurf( "Images/Player.bmp",size );
 };

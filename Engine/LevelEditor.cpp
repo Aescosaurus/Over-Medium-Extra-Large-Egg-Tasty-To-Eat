@@ -5,8 +5,6 @@
 #include "FrameTimer.h"
 
 LevelEditor::LevelEditor()
-	:
-	textFont( Button::GetFont() )
 {
 	const auto nTotalTiles = nTiles.x * nTiles.y;
 	tiles.reserve( nTotalTiles );
@@ -135,7 +133,7 @@ void LevelEditor::Draw( Graphics& gfx ) const
 	// This should go on top of pretty much everything.
 	if( fadeProgress > 0.0f )
 	{
-		textFont.DrawText( "Saved Successfully!",
+		textFont->DrawText( "Saved Successfully!",
 			{ 150,150 },Colors::White,
 			SpriteEffect::SubstituteFade{ Colors::White,
 			Colors::White,fadeProgress },gfx );

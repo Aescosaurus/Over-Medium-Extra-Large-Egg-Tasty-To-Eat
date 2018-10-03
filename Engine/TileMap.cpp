@@ -5,9 +5,6 @@
 #include "Random.h"
 #include "SpriteEffect.h"
 
-const Surface TileMap::wallSpr = { "Images/Wall1.bmp",40,40 };
-const Surface TileMap::groundSpr = { "Images/Floor.bmp",40,40 };
-
 TileMap::TileMap( const std::string& fileName )
 {
 	LoadFile( fileName );
@@ -25,7 +22,7 @@ void TileMap::Draw( Graphics& gfx ) const
 				// This lags so much in debug mode.
 #if NDEBUG
 				gfx.DrawSprite( x * tileDim.x,y * tileDim.y,
-					groundSpr,SpriteEffect::Copy{} );
+					*groundSpr,SpriteEffect::Copy{} );
 #endif
 			}
 			else if( tile == TileType::Wall )
@@ -34,7 +31,7 @@ void TileMap::Draw( Graphics& gfx ) const
 				// 	tileDim.x,tileDim.y,
 				// 	Colors::Gray );
 				gfx.DrawSprite( x * tileDim.x,y * tileDim.y,
-					wallSpr,SpriteEffect::Copy{} );
+					*wallSpr,SpriteEffect::Copy{} );
 			}
 		}
 	}

@@ -4,9 +4,6 @@
 #include "Random.h"
 #include "SpriteEffect.h"
 
-// const Surface Enemy::spriteSheet( "Images/EggEnemyAnim.bmp",128 * 4,16 * 4 );
-const Surface Enemy::spriteSheet( "Images/EggEnemyAnim.bmp",160 * 4,32 * 4 );
-
 Enemy::Enemy( const Vec2& pos,const TileMap& map,
 	const Collideable& coll,std::vector<Bullet>& bullets )
 	:
@@ -16,14 +13,12 @@ Enemy::Enemy( const Vec2& pos,const TileMap& map,
 	myBullets( bullets ),
 	shotTimer( 1.1f ),
 	tilemap( map ),
-	// running( 0,0,size.x,size.y,8,spriteSheet,0.2f,Colors::Magenta ),
-	legsRunning( 0,16 * 4,size.x,size.y,8,spriteSheet,0.2f,Colors::Magenta )
+	legsRunning( 0,16 * 4,size.x,size.y,8,*spriteSheet,0.2f,Colors::Magenta )
 {
 	for( int i = 0; i < 5; ++i )
 	{
-		// bodyCracking( 0,0,size.x,size.y,10,spriteSheet,1.0f,Colors::Magenta )
 		bodyCracking.emplace_back( Anim{ 32 * 4 * i,0,
-			size.x,size.y,2,spriteSheet,0.2f } );
+			size.x,size.y,2,*spriteSheet,0.2f } );
 	}
 	UpdateTarget( tilemap );
 }
@@ -44,7 +39,6 @@ Enemy& Enemy::operator=( const Enemy& other )
 	didCollide = other.didCollide;
 	shotTimer = other.shotTimer;
 	hp = other.hp;
-	// running = other.running;
 	legsRunning = other.legsRunning;
 	bodyCracking = other.bodyCracking;
 

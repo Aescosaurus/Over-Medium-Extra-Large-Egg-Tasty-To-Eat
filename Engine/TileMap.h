@@ -5,6 +5,7 @@
 #include "Graphics.h"
 #include <string>
 #include "Surface.h"
+#include "Codex.h"
 
 class TileMap
 {
@@ -56,6 +57,6 @@ private:
 	static constexpr Vei2 tileDim = { 40,40 };
 	std::vector<TileType> tiles;
 	int curLevel = 0;
-	static const Surface wallSpr;
-	static const Surface groundSpr;
+	const Surface* const wallSpr = Codex<Surface>::RetrieveSurf( "Images/Wall1.bmp",tileDim );
+	const Surface* const groundSpr = Codex<Surface>::RetrieveSurf( "Images/Floor.bmp",tileDim );
 };

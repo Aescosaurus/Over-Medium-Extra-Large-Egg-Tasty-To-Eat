@@ -7,6 +7,7 @@
 #include "Graphics.h"
 #include "Rect.h"
 #include "Surface.h"
+#include "Codex.h"
 
 class Button
 {
@@ -18,11 +19,13 @@ public:
 	virtual void Draw( Graphics& gfx ) const;
 
 	bool IsDown() const;
-	static const Font& GetFont();
 protected:
 	Button( const Vei2& pos,const Vei2& size );
 private:
 	Vei2 GetSize( const std::string& msg ) const;
+private:
+	// Sorry this guy has to be initialized before all those protected members.
+	const Font* const drawFont = Codex<Font>::Retrieve( "Fonts/LuckyPixel24x36.bmp" );
 protected:
 	const Vei2 size;
 	const Vei2 pos;
@@ -32,7 +35,6 @@ protected:
 	static constexpr Vei2 padding = { 16 };
 private:
 	std::string text;
-	static const Font drawFont;
 	RectI hitbox;
 	bool canClick = false;
 	bool clicking = false;

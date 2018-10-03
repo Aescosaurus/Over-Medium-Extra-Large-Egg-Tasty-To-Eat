@@ -8,6 +8,7 @@
 #include "Keyboard.h"
 #include "Button.h"
 #include <string>
+#include "Codex.h"
 
 class LevelEditor
 {
@@ -79,5 +80,5 @@ private:
 
 	float fadeProgress = 0.0f;
 	static constexpr float fadeSpeed = 0.0076f;
-	const Font& textFont;
+	const Font* const textFont = Codex<Font>::Retrieve( "Fonts/LuckyPixel24x36.bmp" );
 };

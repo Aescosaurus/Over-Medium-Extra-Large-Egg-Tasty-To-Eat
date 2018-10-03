@@ -165,6 +165,8 @@ public:
 	void Play( float freqMod = 1.0f,float vol = 1.0f );
 	void StopOne();
 	void StopAll();
+	void StartLooping();
+	bool IsLooping() const;
 	~Sound();
 private:
 	static Sound LoadNonWav( const std::wstring& fileName,LoopType loopType,
@@ -184,4 +186,43 @@ private:
 	std::vector<SoundSystem::Channel*> activeChannelPtrs;
 	static constexpr unsigned int nullSample = 0xFFFFFFFFu;
 	static constexpr float nullSeconds = -1.0f;
+};
+
+class EasySound
+{
+public:
+	EasySound( const std::string& src,bool looping = false )
+		:
+		theSound( src,( looping
+			? Sound::LoopType::AutoFullSound
+			: Sound::LoopType::NotLooping ) ),
+		src( src )
+	{}
+	EasySound( const EasySound& other )
+		:
+		EasySound( other.src,other.IsLooping() )
+	{}
+	void Play( float volume = 1.0f )
+	{
+		theSound.Play( 1.0f,volume );
+	}
+	void Stop()
+	{
+		theSound.StopOne();
+	}
+	void StopAll()
+	{
+		theSound.StopAll();
+	}
+	void StartLooping()
+	{
+		theSound.StartLooping();
+	}
+	bool IsLooping() const
+	{
+		return( theSound.IsLooping() );
+	}
+private:
+	Sound theSound;
+	std::string src;
 };

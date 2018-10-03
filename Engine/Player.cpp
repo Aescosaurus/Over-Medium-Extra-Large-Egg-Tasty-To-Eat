@@ -54,7 +54,7 @@ void Player::Draw( Graphics& gfx ) const
 	const auto drawPos = Vei2( GetCenter() );
 	// gfx.DrawRect( drawPos.x,drawPos.y,
 	// 	size.x,size.y,Colors::Green );
-	gfx.DrawSprite( drawPos.x,drawPos.y,mySpr,
+	gfx.DrawSprite( drawPos.x,drawPos.y,*mySpr,
 		SpriteEffect::Chroma{ Colors::Magenta } );
 }
 

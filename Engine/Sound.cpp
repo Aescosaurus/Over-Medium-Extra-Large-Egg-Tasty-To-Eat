@@ -1008,6 +1008,16 @@ void Sound::StopAll()
 	}
 }
 
+void Sound::StartLooping()
+{
+	looping = true;
+}
+
+bool Sound::IsLooping() const
+{
+	return( looping );
+}
+
 Sound::~Sound()
 {
 	// make sure nobody messes with our shit (also needed for cv.wait())

@@ -8,6 +8,7 @@
 #include "Bullet.h"
 #include "Timer.h"
 #include "Anim.h"
+#include "Codex.h"
 
 class Enemy
 {
@@ -48,9 +49,9 @@ private:
 	static constexpr float maxShotTime = 2.1f;
 	static constexpr float bulletSpeed = 70.0f;
 	int hp = 5;
-	// static const Surface spriteSheet;
-	// Anim running;
-	static const Surface spriteSheet;
+	// const AescPtr<Surface> spriteSheet = Codex
+	// 	::GetSurfPtr( "Images/EggEnemyAnim.bmp",{ 160 * 4,32 * 4 } );
+	const Surface* const spriteSheet = Codex<Surface>::RetrieveSurf( "Images/EggEnemyAnim.bmp",{ 160 * 4,32 * 4 } );
 	Anim legsRunning;
 	std::vector<Anim> bodyCracking;
 	int bodyBreakIndex = 0;

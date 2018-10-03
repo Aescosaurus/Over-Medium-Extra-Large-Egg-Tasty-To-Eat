@@ -1,8 +1,6 @@
 #include "Button.h"
 #include "SpriteEffect.h"
 
-const Font Button::drawFont = "Fonts/LuckyPixel24x36.bmp";
-
 // IMPORTANT NOTE ABOUT C++
 // Members are constructed in the order they're defined in
 //  in the header file, not the order you construct them
@@ -39,17 +37,12 @@ void Button::Draw( Graphics& gfx ) const
 	const auto curDrawCol = ( hovering ? col2 : col1 );
 	gfx.DrawRect( pos.x,pos.y,size.x,size.y,curDrawCol );
 
-	drawFont.DrawText( text,pos + padding / 2,textCol,gfx );
+	drawFont->DrawText( text,pos + padding / 2,textCol,gfx );
 }
 
 bool Button::IsDown() const
 {
 	return( clicking );
-}
-
-const Font& Button::GetFont()
-{
-	return( drawFont );
 }
 
 Button::Button( const Vei2& pos,const Vei2& size )
@@ -64,7 +57,7 @@ Button::Button( const Vei2& pos,const Vei2& size )
 Vei2 Button::GetSize( const std::string& msg ) const
 {
 	const int msgWidth = int( msg.size() );
-	const auto fontCharSize = drawFont.GetCharSize();
+	const auto fontCharSize = drawFont->GetCharSize();
 	return( Vei2{ fontCharSize.x * msgWidth,
 		fontCharSize.y } + padding );
 }
