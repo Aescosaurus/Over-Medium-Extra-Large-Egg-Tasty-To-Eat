@@ -146,6 +146,7 @@
     <ClInclude Include="Collideable.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="COMInitializer.h" />
+    <ClInclude Include="DeathBall.h" />
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="FileIO.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
+    <ClInclude Include="SpikeWall.h" />
     <ClInclude Include="SpriteEffect.h" />
     <ClInclude Include="Stairs.h" />
     <ClInclude Include="Surface.h" />
@@ -198,6 +200,7 @@
     <ClCompile Include="Poly.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="SpikeWall.cpp" />
     <ClCompile Include="Stairs.cpp" />
     <ClCompile Include="Surface.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MaxSpeed</Optimization>

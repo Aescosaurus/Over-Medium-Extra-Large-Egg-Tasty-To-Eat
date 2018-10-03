@@ -41,6 +41,7 @@ Enemy& Enemy::operator=( const Enemy& other )
 	hp = other.hp;
 	legsRunning = other.legsRunning;
 	bodyCracking = other.bodyCracking;
+	bodyBreakIndex = other.bodyBreakIndex;
 
 	return( *this );
 }
@@ -91,6 +92,10 @@ void Enemy::Attack()
 {
 	--hp;
 	++bodyBreakIndex;
+	if( bodyBreakIndex > int( bodyCracking.size() - 1 ) )
+	{
+		bodyBreakIndex = int( bodyCracking.size() - 1 );
+	}
 }
 
 const Vec2& Enemy::GetPos() const

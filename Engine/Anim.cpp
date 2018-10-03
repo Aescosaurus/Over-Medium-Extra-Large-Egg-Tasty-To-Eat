@@ -54,6 +54,11 @@ void Anim::Draw( const Vei2& pos,Graphics& gfx,const RectI& clip ) const
 		SpriteEffect::Chroma{ chroma },false );
 }
 
+void Anim::SetFrame( int nFrame )
+{
+	iCurFrame = nFrame;
+}
+
 bool Anim::IsFinished() const
 {
 	return finished;

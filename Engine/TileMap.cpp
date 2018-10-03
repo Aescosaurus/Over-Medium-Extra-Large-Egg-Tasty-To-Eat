@@ -80,9 +80,14 @@ void TileMap::LoadFile( const std::string& fileName )
 			{
 				tiles.emplace_back( TileType::Empty );
 			}
+			else if( c == '0' )
+			{
+				tiles.emplace_back( TileType::Empty );
+			}
 			else
 			{
-				tiles.emplace_back( TileType( int( c - '0' ) ) );
+				// tiles.emplace_back( TileType( int( c - '0' ) ) );
+				tiles.emplace_back( TileType::Wall );
 			}
 
 			if( !done ) ++tempWidth;

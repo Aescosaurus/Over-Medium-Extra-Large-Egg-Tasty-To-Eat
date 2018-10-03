@@ -11,6 +11,7 @@
 #include "Key.h"
 #include "Keyboard.h"
 #include "Mouse.h"
+#include "SpikeWall.h"
 
 class Campaign
 {
@@ -33,6 +34,11 @@ private:
 	std::vector<Bullet> bullets;
 	std::vector<Bullet> enemyBullets;
 	std::vector<KeyWall> keyWalls;
+	std::vector<SpikeWall> spikeWalls;
 	Key theKey = Key{ { -50,-50 } };
 	bool gotKey = false;
+
+#if !NDEBUG
+	bool canChangeLvl = false;
+#endif
 };

@@ -1,5 +1,7 @@
 #include "Campaign.h"
 #include "FrameTimer.h"
+#include "Utils.h"
+#include <functional>
 
 Campaign::Campaign( Graphics& gfx )
 	:
@@ -16,75 +18,81 @@ Campaign::Campaign( Graphics& gfx )
 void Campaign::UpdateAll( const Keyboard& kbd,
 	const Mouse& mouse )
 {
+#if !NDEBUG
+	if( kbd.KeyIsPressed( VK_SPACE ) )
+	{
+		if( canChangeLvl )
+		{
+			ChangeLevel( tiles.GetNextLvlName() );
+			canChangeLvl = false;
+		}
+	}
+	else canChangeLvl = true;
+#endif
+
 	auto dt = FrameTimer::Mark();
 	if( dt > 0.5f ) dt = 0.0f;
 
 	guy.Update( kbd,mouse,tiles,coll,dt );
+
+	const auto& guyPos = guy.GetPos();
+	const auto& guyRect = guy.GetRect();
 
 	if( stairwell.IsActive() &&
 		stairwell.GetRect().IsOverlappingWith( guy.GetRect() ) )
 	{
 		ChangeLevel( tiles.GetNextLvlName() );
 	}
+	
+	for( auto& b : bullets ) b.Update( tiles,dt );
 
-	for( auto it = enemies.begin(); it < enemies.end(); ++it )
+	for( auto& e : enemies )
 	{
-		auto& e = *it;
-		e.Update( tiles,guy.GetPos(),dt );
+		e.Update( tiles,guyPos,dt );
 
 		const auto& eRect = e.GetRect();
+
+		if( guyRect.IsOverlappingWith( eRect ) )
+		{
+			guy.Attack( e.GetPos() );
+		}
+
 		for( auto& b : bullets )
 		{
 			if( eRect.IsOverlappingWith( b.GetRect() ) )
 			{
-				b.Kill();
 				e.Attack();
+				b.Kill();
 			}
 		}
-
-		if( e.IsDead() )
-		{
-			if( enemies.size() == 1 )
-			{
-				// stairwell.Spawn( it->GetPos() );
-				stairwell.Activate();
-			}
-			it = enemies.erase( it );
-			if( it == enemies.end() ) break;
-		}
 	}
 
-	for( auto it = bullets.begin(); it < bullets.end(); ++it )
+	for( auto& eb : enemyBullets )
 	{
-		auto& b = *it;
-		b.Update( tiles,dt );
+		eb.Update( tiles,dt );
 
-		if( b.IsDead() )
+		if( guyRect.IsOverlappingWith( eb.GetRect() ) )
 		{
-			it = bullets.erase( it );
-			if( it == bullets.end() ) break;
+			guy.Attack( eb.GetPos() );
+			eb.Kill();
 		}
 	}
 
-	const Rect& playerBox = guy.GetRect();
-	for( auto& it = enemyBullets.begin();
-		it < enemyBullets.end();
-		++it )
+	for( auto& sw : spikeWalls )
 	{
-		auto& b = *it;
-		b.Update( tiles,dt );
+		sw.Update( guyRect,dt );
 
-		if( b.GetRect().IsOverlappingWith( playerBox ) )
+		if( guyRect.IsOverlappingWith( sw.GetRect() ) )
 		{
-			guy.Attack();
-		}
-
-		if( b.IsDead() )
-		{
-			it = enemyBullets.erase( it );
-			if( it == enemyBullets.end() ) break;
+			guy.Attack( sw.GetPos() );
 		}
 	}
+
+	chili::remove_erase_if( enemies,std::mem_fn( &Enemy::IsDead ) );
+	chili::remove_erase_if( bullets,std::mem_fn( &Bullet::IsDead ) );
+	chili::remove_erase_if( enemyBullets,std::mem_fn( &Bullet::IsDead ) );
+
+	if( enemies.size() < 1 ) stairwell.Activate();
 
 	if( guy.GetRect().IsOverlappingWith( theKey.GetRect() ) )
 	{
@@ -108,6 +116,8 @@ void Campaign::DrawAll()
 
 	stairwell.Draw( gfx );
 
+	for( const auto& sw : spikeWalls ) sw.Draw( gfx );
+
 	for( const auto& e : enemies ) e.Draw( gfx );
 
 	for( const auto& b : enemyBullets ) b.Draw( gfx );
@@ -124,6 +134,11 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 	const auto guyPos = Vec2( tiles.FindFirstInstance( nextLevel,
 		TileMap::Token::Player ) + tiles.GetTileSize() / 2 );
 	guy.SetTopLeft( guyPos );
+
+	// Enemies list should already be empty but clear just in case.
+	enemies.clear();
+	bullets.clear();
+	enemyBullets.clear();
 
 	// Create all enemies.
 	const auto list = tiles.FindAllInstances( nextLevel,
@@ -143,6 +158,7 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 		keyWalls.emplace_back( KeyWall{ thePos,tiles } );
 	}
 
+	// Create all keys.
 	const auto keyList = tiles.FindAllInstances( nextLevel,TileMap::Token::Key );
 	if( keyList.size() == 1 )
 	{
@@ -153,7 +169,16 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 		TileMap::Token::Stairs ) );
 	stairwell.Deactivate();
 
-	// Enemies list should already be empty.
-	bullets.clear();
-	enemyBullets.clear();
+	// Initialize spike walls of ALL directions.  We don't discriminate.
+	spikeWalls.clear();
+	const auto lSpikeWallList = tiles.FindAllInstances( nextLevel,TileMap::Token::SpikeWallLeft );
+	const auto rSpikeWallList = tiles.FindAllInstances( nextLevel,TileMap::Token::SpikeWallRight );
+	for( const Vei2& wallPos : lSpikeWallList )
+	{
+		spikeWalls.emplace_back( SpikeWall{ wallPos,SpikeWall::Dir::Left } );
+	}
+	for( const Vei2& wallPos : rSpikeWallList )
+	{
+		spikeWalls.emplace_back( SpikeWall{ wallPos,SpikeWall::Dir::Right } );
+	}
 }

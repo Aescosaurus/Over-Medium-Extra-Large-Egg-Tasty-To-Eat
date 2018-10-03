@@ -58,7 +58,7 @@ void Player::Draw( Graphics& gfx ) const
 		SpriteEffect::Chroma{ Colors::Magenta } );
 }
 
-void Player::Attack()
+void Player::Attack( const Vec2& AttackSource )
 {
 }
 

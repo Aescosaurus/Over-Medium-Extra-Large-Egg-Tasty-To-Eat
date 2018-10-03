@@ -25,7 +25,7 @@ public:
 		const TileMap& map,const Collideable& coll,float dt );
 	void Draw( Graphics& gfx ) const;
 
-	void Attack();
+	void Attack( const Vec2& attackSource );
 	void SetTopLeft( const Vec2& newPos );
 
 	const Vec2& GetPos() const;

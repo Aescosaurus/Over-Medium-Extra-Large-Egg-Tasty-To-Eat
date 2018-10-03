@@ -40,6 +40,11 @@ bool Bullet::IsDead() const
 	return( dead );
 }
 
+const Vec2& Bullet::GetPos() const
+{
+	return( pos );
+}
+
 const Rect& Bullet::GetRect() const
 {
 	return( hitbox );

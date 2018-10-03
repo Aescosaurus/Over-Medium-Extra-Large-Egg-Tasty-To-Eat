@@ -22,6 +22,7 @@ public:
 	void Kill();
 
 	bool IsDead() const;
+	const Vec2& GetPos() const;
 	const Rect& GetRect() const;
 private:
 	Vec2 pos;

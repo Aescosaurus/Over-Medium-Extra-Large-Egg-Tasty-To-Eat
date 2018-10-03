@@ -22,7 +22,9 @@ public:
 		Enemy = int( 'E' ),
 		Stairs = int( 'S' ),
 		KeyWall = int( 'L' ),
-		Key = int( 'K' )
+		Key = int( 'K' ),
+		SpikeWallLeft = int( 'T' ),
+		SpikeWallRight = int( 'Y' )
 	};
 public:
 	TileMap( const std::string& fileName );

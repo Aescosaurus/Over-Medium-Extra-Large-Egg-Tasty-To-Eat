@@ -23,6 +23,8 @@ public:
 			effect,reversed );
 	}
 
+	void SetFrame( int nFrame );
+
 	bool IsFinished() const;
 private:
 	void Advance();
