@@ -40,7 +40,8 @@ void Player::Update( const Keyboard& kbd,const Mouse& ms,
 	hitbox.MoveTo( GetCenter() );
 
 	shotTimer.Update( dt );
-	if( ms.LeftIsPressed() && shotTimer.IsDone() )
+	if( ( ms.LeftIsPressed() || kbd.KeyIsPressed( 'F' ) ) &&
+		shotTimer.IsDone() )
 	{
 		shotTimer.Reset();
 

@@ -166,6 +166,7 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 	}
 
 	// Create all keys.
+	theKey.Despawn();
 	const auto keyList = tiles.FindAllInstances( nextLevel,TileMap::Token::Key );
 	if( keyList.size() == 1 )
 	{

@@ -85,7 +85,21 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	{
 		static constexpr auto tSize = TileMap::GetTileSize();
 		const auto realPos = Vei2{ brushPos.x / tSize.x,brushPos.y / tSize.y };
-		PutTile( realPos.x,realPos.y,brush );
+		if( brush == Tile2Char::SpikeWallLeft )
+		{
+			// TODO: Check if this is outside the map.
+			PutTile( realPos.x - 1,realPos.y,brush );
+			PutTile( realPos.x - 2,realPos.y,Tile2Char::Wall );
+		}
+		else if( brush == Tile2Char::SpikeWallRight )
+		{
+			PutTile( realPos.x + 1,realPos.y,brush );
+			PutTile( realPos.x + 2,realPos.y,Tile2Char::Wall );
+		}
+		else
+		{
+			PutTile( realPos.x,realPos.y,brush );
+		}
 	}
 
 	if( fadeProgress > 0.0f )
@@ -149,7 +163,20 @@ void LevelEditor::Draw( Graphics& gfx ) const
 	if( IsAnim( brush ) )
 	{
 		const auto& theAnim = Tile2Anim( brush );
-		theAnim.Draw( brushPos,gfx,
+		Vei2 addAmount = { 0,0 };
+		if( brush == Tile2Char::SpikeWallLeft )
+		{
+			// addAmount.x = 2;
+			gfx.DrawSprite( brushPos.x - 40,brushPos.y,wallSpr,
+				SpriteEffect::Chroma{ Colors::Magenta } );
+		}
+		else if( brush == Tile2Char::SpikeWallRight )
+		{
+			// addAmount.x = -1;
+			gfx.DrawSprite( brushPos.x + 40,brushPos.y,wallSpr,
+				SpriteEffect::Chroma{ Colors::Magenta } );
+		}
+		theAnim.Draw( brushPos + addAmount * 40,gfx,
 			SpriteEffect::Chroma{ Colors::Magenta },
 			IsFlipped( brush ) );
 		brushRect = Rect( theAnim.GetFrameRect() );

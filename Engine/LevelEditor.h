@@ -23,8 +23,8 @@ private:
 		Stairs = int( 'S' ),
 		KeyWall = int( 'L' ),
 		Key = int( 'K' ),
-		SpikeWallLeft = int( 'T' ),
-		SpikeWallRight = int( 'Y' ),
+		SpikeWallLeft = int( 'Y' ),
+		SpikeWallRight = int( 'T' ),
 		DeathBall = int( 'B' )
 	};
 public:
