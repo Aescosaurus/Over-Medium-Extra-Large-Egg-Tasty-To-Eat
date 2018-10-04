@@ -64,6 +64,12 @@ bool Anim::IsFinished() const
 	return finished;
 }
 
+const RectI& Anim::GetFrameRect() const
+{
+	// Using any frame will do the trick I think.
+	return( frames[0] );
+}
+
 void Anim::Advance()
 {
 	if( ++iCurFrame >= int( frames.size() ) )

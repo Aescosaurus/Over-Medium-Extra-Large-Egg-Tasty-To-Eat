@@ -89,6 +89,23 @@ public:
 	{
 		return bottom - top;
 	}
+
+	constexpr Vec2_<T> TopLeft() const
+	{
+		return( Vec2_<T>{ left,top } );
+	}
+	constexpr Vec2_<T> TopRight() const
+	{
+		return( Vec2_<T>{ right,top } );
+	}
+	constexpr Vec2_<T> BotLeft() const
+	{
+		return( Vec2_<T>{ left,bottom } );
+	}
+	constexpr Vec2_<T> BotRight() const
+	{
+		return( Vec2_<T>{ right,bottom } );
+	}
 public:
 	T left;
 	T right;

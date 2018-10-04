@@ -26,6 +26,7 @@ public:
 	void SetFrame( int nFrame );
 
 	bool IsFinished() const;
+	const RectI& GetFrameRect() const;
 private:
 	void Advance();
 private:

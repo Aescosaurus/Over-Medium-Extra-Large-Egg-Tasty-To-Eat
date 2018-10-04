@@ -24,7 +24,8 @@ public:
 		KeyWall = int( 'L' ),
 		Key = int( 'K' ),
 		SpikeWallLeft = int( 'T' ),
-		SpikeWallRight = int( 'Y' )
+		SpikeWallRight = int( 'Y' ),
+		DeathBall = int( 'B' )
 	};
 public:
 	TileMap( const std::string& fileName );

@@ -183,6 +183,7 @@
     <ClCompile Include="Campaign.cpp" />
     <ClCompile Include="Collideable.cpp" />
     <ClCompile Include="COMInitializer.cpp" />
+    <ClCompile Include="DeathBall.cpp" />
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Font.cpp" />

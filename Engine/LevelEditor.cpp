@@ -5,6 +5,8 @@
 #include "FrameTimer.h"
 
 LevelEditor::LevelEditor()
+	:
+	spikeWallAnim( 0,0,10 * 4,10 * 4,5,spikeWallSpr,0.2f )
 {
 	const auto nTotalTiles = nTiles.x * nTiles.y;
 	tiles.reserve( nTotalTiles );
@@ -56,6 +58,9 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	stairs.Update( ms );
 	keyWall.Update( ms );
 	key.Update( ms );
+	// death ball
+	lSpikeWall.Update( ms );
+	rSpikeWall.Update( ms );
 
 	if( saveMap.IsDown() ) PublishLevel();
 	else if( floor.IsDown() ) brush = Tile2Char::Empty;
@@ -65,6 +70,9 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	else if( stairs.IsDown() ) brush = Tile2Char::Stairs;
 	else if( keyWall.IsDown() ) brush = Tile2Char::KeyWall;
 	else if( key.IsDown() ) brush = Tile2Char::Key;
+	// death ball
+	else if( lSpikeWall.IsDown() ) brush = Tile2Char::SpikeWallLeft;
+	else if( rSpikeWall.IsDown() ) brush = Tile2Char::SpikeWallRight;
 
 	if( ms.LeftIsPressed() && wndRect.ContainsPoint( ms.GetPos() ) )
 	{
@@ -78,6 +86,8 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 		fadeProgress -= fadeSpeed * dt * 60.0f;
 		if( fadeProgress < 0.0f ) fadeProgress = 0.0f;
 	}
+
+	spikeWallAnim.Update( dt );
 }
 
 void LevelEditor::Draw( Graphics& gfx ) const
@@ -91,13 +101,25 @@ void LevelEditor::Draw( Graphics& gfx ) const
 				SpriteEffect::Copy{} );
 
 			const auto curTile = Tile2Char( GetTile( x,y ) );
-			const Surface* const drawSurf = Tile2Surf( curTile );
 
-			if( drawSurf != &floorSpr )
+			if( IsAnim( curTile ) )
 			{
-				gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
-					*drawSurf,
-					SpriteEffect::Chroma{ Colors::Magenta } );
+				Tile2Anim( curTile )
+					.Draw( Vei2{ x * tileSize.x,y * tileSize.y },
+					gfx,SpriteEffect::Chroma{ Colors::Magenta },
+					IsFlipped( curTile ) );
+			}
+			else
+			{
+				const Surface* const drawSurf = Tile2Surf( curTile );
+
+				if( drawSurf != &floorSpr )
+				{
+					gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
+						*drawSurf,
+						SpriteEffect::Chroma{ Colors::Magenta },
+						IsFlipped( curTile ) );
+				}
 			}
 		}
 	}
@@ -111,12 +133,29 @@ void LevelEditor::Draw( Graphics& gfx ) const
 	stairs.Draw( gfx );
 	keyWall.Draw( gfx );
 	key.Draw( gfx );
+	lSpikeWall.Draw( gfx,false );
+	rSpikeWall.Draw( gfx,true );
 
-	const Surface* const brushSpr = Tile2Surf( brush );
-	gfx.DrawSprite( brushPos.x,brushPos.y,*brushSpr,
-		SpriteEffect::Chroma{ Colors::Magenta } );
+	Rect brushRect;
+	if( IsAnim( brush ) )
+	{
+		const auto& theAnim = Tile2Anim( brush );
+		theAnim.Draw( brushPos,gfx,
+			SpriteEffect::Chroma{ Colors::Magenta },
+			IsFlipped( brush ) );
+		brushRect = Rect( theAnim.GetFrameRect() );
+	}
+	else
+	{
+		const Surface* const brushSpr = Tile2Surf( brush );
+		gfx.DrawSprite( brushPos.x,brushPos.y,*brushSpr,
+			SpriteEffect::Chroma{ Colors::Magenta },
+			IsFlipped( brush ) );
+		brushRect = brushSpr->GetRect();
+	}
 
-	auto brushRect = brushSpr->GetRect().GetMovedBy( brushPos );
+	// auto brushRect = brushSpr->GetRect().GetMovedBy( brushPos );
+	brushRect.MoveBy( brushPos );
 	static constexpr auto tSize = TileMap::GetTileSize();
 	const auto realPos = Vei2{ brushPos.x / tSize.x,brushPos.y / tSize.y };
 	if( realPos.x == 0 || realPos.x == nTiles.x ||
@@ -220,9 +259,52 @@ const Surface* const LevelEditor::Tile2Surf( Tile2Char tileType ) const
 		return( &keyWallSpr );
 	case Tile2Char::Key:
 		return( &keySpr );
+	case Tile2Char::SpikeWallLeft:
+		return( &spikeWallSpr );
+	case Tile2Char::SpikeWallRight:
+		return( &spikeWallSpr );
 	default:
 		// You will never get this!
 		assert( false );
 		return( &floorSpr );
+	}
+}
+
+const Anim& LevelEditor::Tile2Anim( Tile2Char toTest ) const
+{
+	switch( toTest )
+	{
+	case Tile2Char::SpikeWallLeft:
+	case Tile2Char::SpikeWallRight:
+		return( spikeWallAnim );
+	default:
+		// This should never happen since anything that
+		//  isn't an anim won't have an anim.
+		assert( false );
+		return( spikeWallAnim );
+	}
+}
+
+bool LevelEditor::IsFlipped( Tile2Char test ) const
+{
+	switch( test )
+	{
+	case Tile2Char::SpikeWallRight:
+		return( true );
+	default:
+		return( false );
+	}
+
+}
+
+bool LevelEditor::IsAnim( Tile2Char toTest ) const
+{
+	switch( toTest )
+	{
+	case Tile2Char::SpikeWallLeft:
+	case Tile2Char::SpikeWallRight:
+		return( true );
+	default:
+		return( false );
 	}
 }

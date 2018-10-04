@@ -218,6 +218,9 @@
     <ClCompile Include="SpikeWall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DeathBall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FramebufferPS.hlsl">

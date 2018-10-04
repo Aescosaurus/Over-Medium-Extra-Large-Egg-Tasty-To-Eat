@@ -88,6 +88,11 @@ void Campaign::UpdateAll( const Keyboard& kbd,
 		}
 	}
 
+	for( auto& db : deathBalls )
+	{
+		db.Update( tiles,dt );
+	}
+
 	chili::remove_erase_if( enemies,std::mem_fn( &Enemy::IsDead ) );
 	chili::remove_erase_if( bullets,std::mem_fn( &Bullet::IsDead ) );
 	chili::remove_erase_if( enemyBullets,std::mem_fn( &Bullet::IsDead ) );
@@ -118,6 +123,8 @@ void Campaign::DrawAll()
 
 	for( const auto& sw : spikeWalls ) sw.Draw( gfx );
 
+	for( const auto& db : deathBalls ) db.Draw( gfx );
+
 	for( const auto& e : enemies ) e.Draw( gfx );
 
 	for( const auto& b : enemyBullets ) b.Draw( gfx );
@@ -136,11 +143,11 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 	guy.SetTopLeft( guyPos );
 
 	// Enemies list should already be empty but clear just in case.
-	enemies.clear();
 	bullets.clear();
 	enemyBullets.clear();
 
 	// Create all enemies.
+	enemies.clear();
 	const auto list = tiles.FindAllInstances( nextLevel,
 		TileMap::Token::Enemy );
 	for( const Vei2& thePos : list )
@@ -180,5 +187,13 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 	for( const Vei2& wallPos : rSpikeWallList )
 	{
 		spikeWalls.emplace_back( SpikeWall{ wallPos,SpikeWall::Dir::Right } );
+	}
+
+	// Add all death balls to the vector.
+	deathBalls.clear();
+	const auto deathBallList = tiles.FindAllInstances( nextLevel,TileMap::Token::DeathBall );
+	for( const Vei2& deathBallPos : deathBallList )
+	{
+		deathBalls.emplace_back( DeathBall{ deathBallPos } );
 	}
 }

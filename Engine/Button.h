@@ -8,6 +8,7 @@
 #include "Rect.h"
 #include "Surface.h"
 #include "Codex.h"
+#include "Anim.h"
 
 class Button
 {
@@ -49,6 +50,19 @@ public:
 	ImageButton( const Vei2& center,const Surface& image );
 
 	void Draw( Graphics& gfx ) const override;
+	virtual void Draw( Graphics& gfx,bool flipped ) const;
 private:
 	const Surface& mySpr;
+};
+
+class AnimButton
+	:
+	public ImageButton
+{
+public:
+	AnimButton( const Vei2& center,Anim& myAnim );
+
+	void Draw( Graphics& gfx,bool flipped ) const override;
+private:
+	Anim& myAnim;
 };

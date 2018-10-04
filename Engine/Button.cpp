@@ -70,10 +70,34 @@ ImageButton::ImageButton( const Vei2& center,const Surface& image )
 
 void ImageButton::Draw( Graphics& gfx ) const
 {
+	Draw( gfx,false );
+}
+
+void ImageButton::Draw( Graphics& gfx,bool flipped ) const
+{
 	const auto drawCol = hovering ? col2 : col1;
 	gfx.DrawRect( pos.x,pos.y,size.x,size.y,drawCol );
 
 	gfx.DrawSprite( pos.x + padding.x / 4,
 		pos.y + padding.y / 4,
-		mySpr,SpriteEffect::Chroma{ Colors::Magenta } );
+		mySpr,SpriteEffect::Chroma{ Colors::Magenta },
+		flipped );
+}
+
+AnimButton::AnimButton( const Vei2& center,Anim& myAnim )
+	:
+	ImageButton( center,
+		Surface{ myAnim.GetFrameRect().GetWidth(),
+		myAnim.GetFrameRect().GetHeight() } ),
+	myAnim( myAnim )
+{}
+
+void AnimButton::Draw( Graphics& gfx,bool flipped ) const
+{
+	const auto drawCol = hovering ? col2 : col1;
+	gfx.DrawRect( pos.x,pos.y,size.x,size.y,drawCol );
+	
+	myAnim.Draw( pos + padding / 4,gfx,
+		SpriteEffect::Chroma{ Colors::Magenta },
+		flipped );
 }
