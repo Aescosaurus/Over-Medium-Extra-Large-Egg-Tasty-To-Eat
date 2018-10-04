@@ -90,7 +90,7 @@ void Campaign::UpdateAll( const Keyboard& kbd,
 
 	for( auto& db : deathBalls )
 	{
-		db.Update( tiles,dt );
+		db.Update( tiles,coll,dt );
 	}
 
 	chili::remove_erase_if( enemies,std::mem_fn( &Enemy::IsDead ) );

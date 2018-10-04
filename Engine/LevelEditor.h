@@ -47,6 +47,8 @@ private:
 	bool IsFlipped( Tile2Char test ) const;
 	bool IsAnim( Tile2Char toTest ) const;
 private:
+	static int nInstances;
+
 	std::vector<Tile2Char> tiles;
 	static constexpr Vei2 nTiles = TileMap::nTiles;
 	static constexpr Vei2 tileSize = TileMap::GetTileSize();
@@ -59,6 +61,7 @@ private:
 	const Surface stairsSpr = { "Images/Stairs.bmp",32,32 };
 	const Surface keyWallSpr = { "Images/KeyWall.bmp",40,40 };
 	const Surface keySpr = { "Images/Key.bmp",32,32 };
+	const Surface deathBallSpr = { "Images/DeathBallAnim.bmp",32 * 4,8 * 4 };
 	const Surface spikeWallSpr = { "Images/SpikeWallAnim.bmp",50 * 4,10 * 4 };
 
 	static constexpr Vei2 menuCenter = { Graphics::GameScreenWidth +
@@ -76,6 +79,7 @@ private:
 	static constexpr int start = 64 + 16;
 
 	Anim spikeWallAnim;
+	Anim deathBallAnim;
 
 	ImageButton floor = { menuCenter - qMenuW + Vei2( 0,start + mPadding ),floorSpr };
 	ImageButton wall = { menuCenter + qMenuW + Vei2( 0,start + mPadding ),wallSpr };
@@ -84,9 +88,7 @@ private:
 	ImageButton stairs = { menuCenter - qMenuW + Vei2( 0,start + mPadding * 3 + bBSize + sBSize ),stairsSpr };
 	ImageButton keyWall = { menuCenter + qMenuW + Vei2( 0,start + mPadding * 3 + bBSize + sBSize ),keyWallSpr };
 	ImageButton key = { menuCenter - qMenuW + Vei2( 0,start + mPadding * 4 + bBSize + sBSize * 2 ),keySpr };
-	// death ball will go here someday
-	// ImageButton lSpikeWall = { menuCenter - qMenuW + Vei2( 0,start + mPadding * 5 + bBSize + sBSize * 3 ),spikeWallSpr1 };
-	// ImageButton rSpikeWall = { menuCenter + qMenuW + Vei2( 0,start + mPadding * 5 + bBSize + sBSize * 3 ),spikeWallSpr1 };
+	AnimButton deathBall = { menuCenter + qMenuW + Vei2( 0,start + mPadding * 4 + bBSize + sBSize * 2 ),deathBallAnim };
 	AnimButton lSpikeWall = { menuCenter - qMenuW + Vei2( 0,start + mPadding * 5 + bBSize + sBSize * 3 ),spikeWallAnim };
 	AnimButton rSpikeWall = { menuCenter + qMenuW + Vei2( 0,start + mPadding * 5 + bBSize + sBSize * 3 ),spikeWallAnim };
 	// Man that was gross let's hope I come up with a better way to do this next time.

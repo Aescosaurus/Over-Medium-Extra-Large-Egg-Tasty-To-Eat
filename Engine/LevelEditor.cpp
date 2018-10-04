@@ -4,10 +4,17 @@
 #include <fstream>
 #include "FrameTimer.h"
 
+int LevelEditor::nInstances = 0;
+
 LevelEditor::LevelEditor()
 	:
-	spikeWallAnim( 0,0,10 * 4,10 * 4,5,spikeWallSpr,0.2f )
+	spikeWallAnim( 0,0,10 * 4,10 * 4,5,spikeWallSpr,0.2f ),
+	deathBallAnim( 0,0,8 * 4,8 * 4,4,deathBallSpr,0.2f )
 {
+	// Enforce singleton-ness.
+	++nInstances;
+	assert( nInstances == 1 );
+
 	const auto nTotalTiles = nTiles.x * nTiles.y;
 	tiles.reserve( nTotalTiles );
 	// for( int i = 0; i < nTotalTiles; ++i )
@@ -58,7 +65,7 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	stairs.Update( ms );
 	keyWall.Update( ms );
 	key.Update( ms );
-	// death ball
+	deathBall.Update( ms );
 	lSpikeWall.Update( ms );
 	rSpikeWall.Update( ms );
 
@@ -70,7 +77,7 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	else if( stairs.IsDown() ) brush = Tile2Char::Stairs;
 	else if( keyWall.IsDown() ) brush = Tile2Char::KeyWall;
 	else if( key.IsDown() ) brush = Tile2Char::Key;
-	// death ball
+	else if( deathBall.IsDown() ) brush = Tile2Char::DeathBall;
 	else if( lSpikeWall.IsDown() ) brush = Tile2Char::SpikeWallLeft;
 	else if( rSpikeWall.IsDown() ) brush = Tile2Char::SpikeWallRight;
 
@@ -88,6 +95,7 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	}
 
 	spikeWallAnim.Update( dt );
+	deathBallAnim.Update( dt );
 }
 
 void LevelEditor::Draw( Graphics& gfx ) const
@@ -133,6 +141,7 @@ void LevelEditor::Draw( Graphics& gfx ) const
 	stairs.Draw( gfx );
 	keyWall.Draw( gfx );
 	key.Draw( gfx );
+	deathBall.Draw( gfx,false );
 	lSpikeWall.Draw( gfx,false );
 	rSpikeWall.Draw( gfx,true );
 
@@ -259,6 +268,8 @@ const Surface* const LevelEditor::Tile2Surf( Tile2Char tileType ) const
 		return( &keyWallSpr );
 	case Tile2Char::Key:
 		return( &keySpr );
+	case Tile2Char::DeathBall:
+		return( &deathBallSpr );
 	case Tile2Char::SpikeWallLeft:
 		return( &spikeWallSpr );
 	case Tile2Char::SpikeWallRight:
@@ -274,6 +285,8 @@ const Anim& LevelEditor::Tile2Anim( Tile2Char toTest ) const
 {
 	switch( toTest )
 	{
+	case Tile2Char::DeathBall:
+		return( deathBallAnim );
 	case Tile2Char::SpikeWallLeft:
 	case Tile2Char::SpikeWallRight:
 		return( spikeWallAnim );
@@ -301,6 +314,7 @@ bool LevelEditor::IsAnim( Tile2Char toTest ) const
 {
 	switch( toTest )
 	{
+	case Tile2Char::DeathBall:
 	case Tile2Char::SpikeWallLeft:
 	case Tile2Char::SpikeWallRight:
 		return( true );
