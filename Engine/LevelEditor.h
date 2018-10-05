@@ -46,6 +46,7 @@ private:
 	const Anim& Tile2Anim( Tile2Char toTest ) const;
 	bool IsFlipped( Tile2Char test ) const;
 	bool IsAnim( Tile2Char toTest ) const;
+	Vei2 GetTileOffset( Tile2Char toTest ) const;
 private:
 	static int nInstances;
 

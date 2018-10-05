@@ -85,21 +85,12 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	{
 		static constexpr auto tSize = TileMap::GetTileSize();
 		const auto realPos = Vei2{ brushPos.x / tSize.x,brushPos.y / tSize.y };
-		if( brush == Tile2Char::SpikeWallLeft )
-		{
-			// TODO: Check if this is outside the map.
-			PutTile( realPos.x - 1,realPos.y,brush );
-			PutTile( realPos.x - 2,realPos.y,Tile2Char::Wall );
-		}
-		else if( brush == Tile2Char::SpikeWallRight )
-		{
-			PutTile( realPos.x + 1,realPos.y,brush );
-			PutTile( realPos.x + 2,realPos.y,Tile2Char::Wall );
-		}
-		else
-		{
-			PutTile( realPos.x,realPos.y,brush );
-		}
+
+		const auto tileOffset = GetTileOffset( brush );
+
+		PutTile( realPos.x + tileOffset.x,
+			realPos.y + tileOffset.y,
+			brush );
 	}
 
 	if( fadeProgress > 0.0f )
@@ -114,22 +105,46 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 
 void LevelEditor::Draw( Graphics& gfx ) const
 {
+	struct AnimToDraw
+	{
+		const Anim& theAnim;
+		const Vei2 pos;
+		const bool flipped;
+	};
+	std::vector<AnimToDraw> animsToDraw;
+
+	const auto chroma = SpriteEffect::Chroma{ Colors::Magenta };
+
 	for( int y = 0; y < nTiles.y; ++y )
 	{
 		for( int x = 0; x < nTiles.x; ++x )
 		{
-			gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
-				floorSpr,
-				SpriteEffect::Copy{} );
+			bool drawingFloor = true;
+			// gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
+			// 	floorSpr,
+			// 	SpriteEffect::Copy{} );
 
 			const auto curTile = Tile2Char( GetTile( x,y ) );
+			const auto tileOffset = -GetTileOffset( curTile ) * 40;
 
 			if( IsAnim( curTile ) )
 			{
-				Tile2Anim( curTile )
-					.Draw( Vei2{ x * tileSize.x,y * tileSize.y },
-					gfx,SpriteEffect::Chroma{ Colors::Magenta },
-					IsFlipped( curTile ) );
+				const auto& theAnim = Tile2Anim( curTile );
+
+				if( tileOffset.x != 0 || tileOffset.y != 0 )
+				{
+					animsToDraw.emplace_back( AnimToDraw{ theAnim,
+						Vei2{ ( x * tileSize.x ) + tileOffset.x,
+						( y * tileSize.y ) + tileOffset.y },
+						IsFlipped( curTile ) } );
+					drawingFloor = false;
+				}
+				else
+				{
+					theAnim.Draw( Vei2{ ( x * tileSize.x ) + tileOffset.x,
+						( y * tileSize.y ) + tileOffset.y },
+						gfx,chroma,IsFlipped( curTile ) );
+				}
 			}
 			else
 			{
@@ -137,13 +152,30 @@ void LevelEditor::Draw( Graphics& gfx ) const
 
 				if( drawSurf != &floorSpr )
 				{
-					gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
+					drawingFloor = false;
+
+					gfx.DrawSprite( ( x * tileSize.x ) + tileOffset.x,
+						( y * tileSize.y ) + tileOffset.y,
 						*drawSurf,
-						SpriteEffect::Chroma{ Colors::Magenta },
+						chroma,
 						IsFlipped( curTile ) );
 				}
 			}
+			
+			const auto& curDrawSpr = ( drawingFloor )
+				? floorSpr : wallSpr;
+
+			gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
+				curDrawSpr,
+				SpriteEffect::Copy{} );
 		}
+	}
+
+	for( const auto& theAnimThing : animsToDraw )
+	{
+		theAnimThing.theAnim.Draw( theAnimThing.pos,
+			gfx,chroma,
+			theAnimThing.flipped );
 	}
 
 	backToMenu.Draw( gfx );
@@ -163,20 +195,12 @@ void LevelEditor::Draw( Graphics& gfx ) const
 	if( IsAnim( brush ) )
 	{
 		const auto& theAnim = Tile2Anim( brush );
-		Vei2 addAmount = { 0,0 };
-		if( brush == Tile2Char::SpikeWallLeft )
-		{
-			// addAmount.x = 2;
-			gfx.DrawSprite( brushPos.x - 40,brushPos.y,wallSpr,
-				SpriteEffect::Chroma{ Colors::Magenta } );
-		}
-		else if( brush == Tile2Char::SpikeWallRight )
-		{
-			// addAmount.x = -1;
-			gfx.DrawSprite( brushPos.x + 40,brushPos.y,wallSpr,
-				SpriteEffect::Chroma{ Colors::Magenta } );
-		}
-		theAnim.Draw( brushPos + addAmount * 40,gfx,
+
+		// const auto curTile = Tile2Char( brush );
+		// const Vei2 addAmount = GetTileOffset( curTile );
+		const Vei2 addAmount = { 0,0 };
+		
+		theAnim.Draw( brushPos + addAmount,gfx,
 			SpriteEffect::Chroma{ Colors::Magenta },
 			IsFlipped( brush ) );
 		brushRect = Rect( theAnim.GetFrameRect() );
@@ -347,5 +371,18 @@ bool LevelEditor::IsAnim( Tile2Char toTest ) const
 		return( true );
 	default:
 		return( false );
+	}
+}
+
+Vei2 LevelEditor::GetTileOffset( Tile2Char toTest ) const
+{
+	switch( toTest )
+	{
+	case Tile2Char::SpikeWallLeft:
+		return( Vei2{ -1,0 } );
+	case Tile2Char::SpikeWallRight:
+		return( Vei2{ 1,0 } );
+	default:
+		return( Vei2{ 0,0 } );
 	}
 }

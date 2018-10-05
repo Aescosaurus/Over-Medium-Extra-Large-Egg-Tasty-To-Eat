@@ -77,6 +77,10 @@ public:
 	{
 		return( x == rhs.x && y == rhs.y );
 	}
+	constexpr Vec2_ operator-() const
+	{
+		return( *this * T( -1 ) );
+	}
 	
 	constexpr T GetLength() const
 	{
