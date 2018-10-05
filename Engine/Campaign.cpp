@@ -46,22 +46,27 @@ void Campaign::UpdateAll( const Keyboard& kbd,
 	
 	for( auto& b : bullets ) b.Update( tiles,dt );
 
-	for( auto& e : enemies )
+	// Typed this out just so we're clear what's going on:
+	//  This is a vector of unique pointers to EnemyBases,
+	//  We don't have to use a ref since it's just a tiny
+	//  little pointer, but it has to be a ref since it
+	//  can be any child of EnemyBase.
+	for( std::unique_ptr<EnemyBase>& e : eggs )
 	{
-		e.Update( tiles,guyPos,dt );
+		e->Update( guyPos,dt );
 
-		const auto& eRect = e.GetRect();
+		const auto& eRect = e->GetRect();
 
 		if( guyRect.IsOverlappingWith( eRect ) )
 		{
-			guy.Attack( e.GetPos() );
+			guy.Attack( e->GetPos() );
 		}
 
 		for( auto& b : bullets )
 		{
 			if( eRect.IsOverlappingWith( b.GetRect() ) )
 			{
-				e.Attack();
+				e->Attack( guy.GetPos() );
 				b.Kill();
 			}
 		}
@@ -93,11 +98,11 @@ void Campaign::UpdateAll( const Keyboard& kbd,
 		db.Update( tiles,coll,dt );
 	}
 
-	chili::remove_erase_if( enemies,std::mem_fn( &Enemy::IsDead ) );
+	chili::remove_erase_if( eggs,std::mem_fn( &EnemyBase::IsDead ) );
 	chili::remove_erase_if( bullets,std::mem_fn( &Bullet::IsDead ) );
 	chili::remove_erase_if( enemyBullets,std::mem_fn( &Bullet::IsDead ) );
 
-	if( enemies.size() < 1 ) stairwell.Activate();
+	if( eggs.size() < 1 ) stairwell.Activate();
 
 	if( guy.GetRect().IsOverlappingWith( theKey.GetRect() ) )
 	{
@@ -125,7 +130,7 @@ void Campaign::DrawAll()
 
 	for( const auto& db : deathBalls ) db.Draw( gfx );
 
-	for( const auto& e : enemies ) e.Draw( gfx );
+	for( const auto& e : eggs ) e->Draw( gfx );
 
 	for( const auto& b : enemyBullets ) b.Draw( gfx );
 
@@ -146,14 +151,15 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 	bullets.clear();
 	enemyBullets.clear();
 
-	// Create all enemies.
-	enemies.clear();
+	// Create all egg soldier enemies.
+	eggs.clear(); // Should be empty anyway, but if you skip levels it won't be.
 	const auto list = tiles.FindAllInstances( nextLevel,
 		TileMap::Token::Enemy );
 	for( const Vei2& thePos : list )
 	{
-		enemies.emplace_back( Enemy{ Vec2( thePos ),
-			tiles,coll,enemyBullets } );
+		// enemies.emplace_back( Enemy{ Vec2( thePos ),
+		// 	tiles,coll,enemyBullets } );
+		eggs.emplace_back( new EggSoldier{ thePos,tiles,coll,enemyBullets } );
 	}
 
 	// Create all key walls.

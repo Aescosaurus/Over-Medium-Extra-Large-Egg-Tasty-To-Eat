@@ -2,7 +2,6 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "Collideable.h"
-#include "Enemy.h"
 #include <vector>
 #include "Bullet.h"
 #include <string>
@@ -13,11 +12,18 @@
 #include "Mouse.h"
 #include "SpikeWall.h"
 #include "DeathBall.h"
+#include <memory>
+#include "EggSoldier.h"
 
 class Campaign
 {
 public:
 	Campaign( Graphics& gfx );
+
+	Campaign( const Campaign& other ) = delete;
+	Campaign( const Campaign&& other ) = delete;
+	Campaign& operator=( const Campaign& other ) = delete;
+	Campaign& operator=( const Campaign&& other ) = delete;
 
 	void UpdateAll( const Keyboard& kbd,
 		const Mouse& mouse );
@@ -31,7 +37,8 @@ private:
 	TileMap tiles;
 	Player guy;
 	Stairs stairwell;
-	std::vector<Enemy> enemies;
+	// std::vector<Enemy> enemies;
+	std::vector<std::unique_ptr<EnemyBase>> eggs;
 	std::vector<Bullet> bullets;
 	std::vector<Bullet> enemyBullets;
 	std::vector<KeyWall> keyWalls;
