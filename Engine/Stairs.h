@@ -4,6 +4,7 @@
 #include "Rect.h"
 #include "Graphics.h"
 #include "Surface.h"
+#include "Codex.h"
 
 class Stairs
 {
@@ -24,5 +25,5 @@ private:
 	Vec2 pos;
 	Rect hitbox;
 	bool activated = false;
-	const Surface mySpr = { "Images/Stairs.bmp",size.x,size.y };
+	const Surface* const mySpr = Codex<Surface>::RetrieveSurf( "Images/Stairs.bmp",{ 4,4 } );
 };

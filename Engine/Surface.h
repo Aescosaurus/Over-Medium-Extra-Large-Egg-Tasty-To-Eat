@@ -13,7 +13,8 @@ public:
 	Surface( const Surface& other,const RectI& clip );
 	Surface( const std::string& fileName,const RectI& clip );
 	Surface( int width,int height );
-	Surface( const std::string& filename,int width,int height );
+	// Gives a surface loaded from filename expanded to xAmount and yAmount.
+	Surface( const std::string& filename,int xAmount,int yAmount );
 	Surface( const Surface& other,int width,int height );
 
 	Surface( const Surface& ) = default;
@@ -42,7 +43,10 @@ public:
 	int GetHeight() const;
 	Vei2 GetSize() const;
 	RectI GetRect() const;
+	// Expand to width and height.  Must be multiples of original.
 	Surface GetExpanded( int width,int height ) const;
+	// Expand by xFactor and yFactor.
+	Surface GetExpandedBy( int xFactor,int yFactor ) const;
 	Surface GetInterpolated( int width,int height ) const;
 private:
 	std::vector<Color> pixels;

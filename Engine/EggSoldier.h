@@ -39,7 +39,7 @@ private:
 	static constexpr float minShotTime = 1.4f;
 	static constexpr float maxShotTime = 2.1f;
 	static constexpr float bulletSpeed = 70.0f;
-	const Surface* const spriteSheet = Codex<Surface>::RetrieveSurf( "Images/EggEnemyAnim.bmp",{ 160 * 4,32 * 4 } );
+	const Surface* const spriteSheet = Codex<Surface>::RetrieveSurf( "Images/EggEnemyAnim.bmp",{ 4,4 } );
 	Anim legsRunning;
 	std::vector<Anim> bodyCracking;
 	int bodyBreakIndex = 0;

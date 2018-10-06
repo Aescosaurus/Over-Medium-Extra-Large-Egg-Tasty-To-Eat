@@ -43,5 +43,5 @@ private:
 	Timer shotTimer;
 	static constexpr float refireTime = 0.21f;
 	// const Surface mySpr = { "Images/Player.bmp",size.x,size.y };
-	const Surface* const mySpr = Codex<Surface>::RetrieveSurf( "Images/Player.bmp",size );
+	const Surface* const mySpr = Codex<Surface>::RetrieveSurf( "Images/Player.bmp",{ 4,4 } );
 };

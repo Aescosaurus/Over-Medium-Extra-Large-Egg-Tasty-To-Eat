@@ -4,6 +4,7 @@
 #include "Rect.h"
 #include "Graphics.h"
 #include "Surface.h"
+#include "Codex.h"
 
 class Key
 {
@@ -21,5 +22,5 @@ private:
 	static constexpr Vei2 size = { 32,32 };
 	RectI hitbox;
 	bool active = true;
-	static const Surface spr;
+	const Surface* const spr = Codex<Surface>::RetrieveSurf( "Images/Key.bmp",{ 4,4 } );
 };

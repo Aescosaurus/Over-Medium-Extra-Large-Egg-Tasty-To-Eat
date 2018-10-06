@@ -4,6 +4,7 @@
 #include "TileMap.h"
 #include "Graphics.h"
 #include "Surface.h"
+#include "Codex.h"
 
 class KeyWall
 {
@@ -18,5 +19,5 @@ private:
 	static constexpr Vei2 size = TileMap::GetTileSize();
 	bool unlocked = false;
 	TileMap& myTileMap;
-	static const Surface wallSpr;
+	const Surface* const wallSpr = Codex<Surface>::RetrieveSurf( "Images/KeyWall.bmp",{ 4,4 } );
 };

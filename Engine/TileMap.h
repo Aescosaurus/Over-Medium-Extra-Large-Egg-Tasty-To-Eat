@@ -60,6 +60,6 @@ private:
 	static constexpr Vei2 tileDim = { 40,40 };
 	std::vector<TileType> tiles;
 	int curLevel = 0;
-	const Surface* const wallSpr = Codex<Surface>::RetrieveSurf( "Images/Wall1.bmp",tileDim );
-	const Surface* const groundSpr = Codex<Surface>::RetrieveSurf( "Images/Floor.bmp",tileDim );
+	const Surface* const wallSpr = Codex<Surface>::RetrieveSurf( "Images/Wall1.bmp",{ 4,4 } );
+	const Surface* const groundSpr = Codex<Surface>::RetrieveSurf( "Images/Floor.bmp",{ 4,4 } );
 };

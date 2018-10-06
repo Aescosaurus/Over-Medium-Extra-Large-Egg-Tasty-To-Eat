@@ -110,11 +110,11 @@ Surface::Surface( int width,int height )
 {
 }
 
-Surface::Surface( const std::string& filename,int width,int height )
+Surface::Surface( const std::string& filename,int xAmount,int yAmount )
 	:
-	Surface( width,height )
+	Surface( xAmount,yAmount )
 {
-	*this = Surface( filename ).GetExpanded( width,height );
+	*this = Surface( filename ).GetExpandedBy( xAmount,yAmount );
 }
 
 Surface::Surface( const Surface& other,int width,int height )
@@ -210,6 +210,11 @@ Surface Surface::GetExpanded( int width,int height ) const
 	}
 
 	return bigger;
+}
+
+Surface Surface::GetExpandedBy( int xFactor,int yFactor ) const
+{
+	return( GetExpanded( GetWidth() * xFactor,GetHeight() * yFactor ) );
 }
 
 // https://rosettacode.org/wiki/Bilinear_interpolation helped a lot with this conversion code.

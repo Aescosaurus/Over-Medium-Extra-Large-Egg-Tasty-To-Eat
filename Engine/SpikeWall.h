@@ -27,7 +27,7 @@ public:
 private:
 	static constexpr Vei2 size = { 40,40 };
 	Vei2 pos;
-	const Surface* const sprSheet = Codex<Surface>::RetrieveSurf( "Images/SpikeWallAnim.bmp",{ size.x * 5,size.y } );
+	const Surface* const sprSheet = Codex<Surface>::RetrieveSurf( "Images/SpikeWallAnim.bmp",{ 4,4 } );
 	Anim shootSpikes;
 	bool spiking = false;
 	bool doneSpiking = false;

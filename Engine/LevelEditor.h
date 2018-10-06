@@ -55,15 +55,15 @@ private:
 	static constexpr Vei2 tileSize = TileMap::GetTileSize();
 	Tile2Char brush = Tile2Char::Wall;
 	Vei2 brushPos = { 0,0 };
-	const Surface floorSpr = { "Images/Floor.bmp",40,40 };
-	const Surface wallSpr = { "Images/Wall1.bmp",40,40 };
-	const Surface playerSpr = { "Images/Player.bmp",32,32 };
-	const Surface enemySpr = { { "Images/EggEnemyAnim.bmp",RectI{ { 0,0 },16,16 } },32,32 };
-	const Surface stairsSpr = { "Images/Stairs.bmp",32,32 };
-	const Surface keyWallSpr = { "Images/KeyWall.bmp",40,40 };
-	const Surface keySpr = { "Images/Key.bmp",32,32 };
-	const Surface deathBallSpr = { "Images/DeathBallAnim.bmp",32 * 4,8 * 4 };
-	const Surface spikeWallSpr = { "Images/SpikeWallAnim.bmp",50 * 4,10 * 4 };
+	const Surface floorSpr = { "Images/Floor.bmp",4,4 };
+	const Surface wallSpr = { "Images/Wall1.bmp",4,4 };
+	const Surface playerSpr = { "Images/Player.bmp",4,4 };
+	const Surface enemySpr = { { "Images/EggEnemyAnim.bmp",RectI{ { 0,0 },16,16 } },4,4 };
+	const Surface stairsSpr = { "Images/Stairs.bmp",4,4 };
+	const Surface keyWallSpr = { "Images/KeyWall.bmp",4,4 };
+	const Surface keySpr = { "Images/Key.bmp",4,4 };
+	const Surface deathBallSpr = { "Images/DeathBallAnim.bmp",4,4 };
+	const Surface spikeWallSpr = { "Images/SpikeWallAnim.bmp",4,4 };
 
 	static constexpr Vei2 menuCenter = { Graphics::GameScreenWidth +
 		( Graphics::ScreenWidth - Graphics::GameScreenWidth ) / 2,0 };

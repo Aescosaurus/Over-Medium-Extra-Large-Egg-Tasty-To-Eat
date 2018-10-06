@@ -17,7 +17,7 @@ void Stairs::Draw( Graphics& gfx ) const
 		// 	size.x,size.y,Colors::Cyan );
 
 		gfx.DrawSprite( int( pos.x ),int( pos.y ),
-			mySpr,SpriteEffect::Copy{} );
+			*mySpr,SpriteEffect::Copy{} );
 
 		// gfx.DrawHitbox( hitbox );
 	}
