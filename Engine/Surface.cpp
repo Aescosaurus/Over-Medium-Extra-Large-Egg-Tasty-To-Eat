@@ -84,9 +84,9 @@ Surface::Surface( const Surface& other,const RectI& clip )
 
 	int i = 0;
 	int j = 0;
-	for( int y = clip.top; y < clip.bottom - 1; ++y )
+	for( int y = clip.top; y < clip.bottom; ++y )
 	{
-		for( int x = clip.left; x < clip.right - 1; ++x )
+		for( int x = clip.left; x < clip.right; ++x )
 		{
 			PutPixel( j,i,other.GetPixel( x,y ) );
 			++j;

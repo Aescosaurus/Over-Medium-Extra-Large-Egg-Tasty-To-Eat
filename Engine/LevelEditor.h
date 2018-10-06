@@ -58,14 +58,14 @@ private:
 	Vei2 brushPos = { 0,0 };
 	const Surface floorSpr = { "Images/Floor.bmp",4,4 };
 	const Surface wallSpr = { "Images/Wall1.bmp",4,4 };
-	const Surface playerSpr = { "Images/Player.bmp",4,4 };
-	const Surface enemySpr = { { "Images/EggEnemyAnim.bmp",RectI{ { 0,0 },16,16 } },2,2 };
+	const Surface playerSpr = { { "Images/PlayerAnim.bmp",RectI{ 0,8,0,8 } },4,4 };
+	const Surface enemySpr = { { "Images/EggSoldierAnim.bmp",RectI{ 0,8,0,8 } },4,4 };
 	const Surface stairsSpr = { "Images/Stairs.bmp",4,4 };
 	const Surface keyWallSpr = { "Images/KeyWall.bmp",4,4 };
 	const Surface keySpr = { "Images/Key.bmp",4,4 };
 	const Surface deathBallSpr = { "Images/DeathBallAnim.bmp",4,4 };
 	const Surface spikeWallSpr = { "Images/SpikeWallAnim.bmp",4,4 };
-	const Surface eggsploderSpr = { { "Images/EggsploderAnim.bmp",RectI{ { 0,0 },8,8 } },4,4 };
+	const Surface eggsploderSpr = { { "Images/EggsploderAnim.bmp",RectI{ 0,8,0,8 } },4,4 };
 
 	static constexpr Vei2 menuCenter = { Graphics::GameScreenWidth +
 		( Graphics::ScreenWidth - Graphics::GameScreenWidth ) / 2,0 };

@@ -44,7 +44,7 @@ private:
 	std::vector<Bullet> enemyBullets;
 	std::vector<KeyWall> keyWalls;
 	std::vector<SpikeWall> spikeWalls;
-	std::vector<DeathBall> deathBalls;
+	// std::vector<DeathBall> deathBalls;
 	Key theKey = Key{ { -50,-50 } };
 	bool gotKey = false;
 

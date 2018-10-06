@@ -8,13 +8,9 @@ EggSoldier::EggSoldier( const Vec2& pos,const TileMap& map,
 	EnemyBase( pos,size,map,coll,myHP ),
 	myBullets( bullets ),
 	shotTimer( 1.1f ),
-	legsRunning( 0,16 * 4,size.x,size.y,8,*spriteSheet,0.2f )
+	legsRunning( 0,8 * 4,size.x,size.y,4,*spriteSheet,0.2f ),
+	bodyCracking( 0,0,size.x,size.y,5,*spriteSheet,1.0f )
 {
-	for( int i = 0; i < 5; ++i )
-	{
-		bodyCracking.emplace_back( Anim{ 32 * 4 * i,0,
-			size.x,size.y,2,*spriteSheet,0.2f } );
-	}
 	UpdateTarget();
 }
 
@@ -34,12 +30,13 @@ void EggSoldier::Update( const Vec2& playerPos,float dt )
 	{
 		shotTimer.Reset( Random::RangeF( minShotTime,maxShotTime ) );
 
-		myBullets.emplace_back( Bullet{ GetCenter(),playerPos,bulletSpeed } );
+		myBullets.emplace_back( Bullet{ GetCenter() +
+			Vec2( Vei2{ LookDir() * size.x / 2,0 } ),
+			playerPos,bulletSpeed,Bullet::Team::Enemy } );
 	}
 
 	const auto rngOffset = Random::RangeF( 0.9f,1.1f );
 	legsRunning.Update( dt * rngOffset );
-	bodyCracking[bodyBreakIndex].Update( dt * rngOffset );
 }
 
 void EggSoldier::Draw( Graphics& gfx ) const
@@ -47,9 +44,9 @@ void EggSoldier::Draw( Graphics& gfx ) const
 	const auto chromaEffect = SpriteEffect::Chroma{ Colors::Magenta };
 
 	legsRunning.Draw( Vei2( pos ),gfx,
-		chromaEffect,vel.x < 0.0f );
-	bodyCracking[bodyBreakIndex].Draw( Vei2( pos ),gfx,
-		chromaEffect,vel.x < 0.0f );
+		chromaEffect,IsLookingLeft() );
+	bodyCracking.Draw( Vei2( pos ),gfx,
+		chromaEffect,IsLookingLeft() );
 }
 
 EggSoldier::EggSoldier( const EggSoldier& other )
@@ -69,7 +66,6 @@ EggSoldier& EggSoldier::operator=( const EggSoldier& other )
 	shotTimer = other.shotTimer;
 	legsRunning = other.legsRunning;
 	bodyCracking = other.bodyCracking;
-	bodyBreakIndex = other.bodyBreakIndex;
 	
 	return( *this );
 }
@@ -78,9 +74,7 @@ void EggSoldier::Attack( const Vec2& whereFrom )
 {
 	EnemyBase::Attack( whereFrom );
 
-	const int maxIndex = int( bodyCracking.size() - 1 );
-	++bodyBreakIndex;
-	if( bodyBreakIndex > maxIndex ) bodyBreakIndex = maxIndex;
+	bodyCracking.Update( 1.0f );
 
 	// UpdateTarget();
 }
@@ -106,4 +100,15 @@ void EggSoldier::UpdateTarget()
 Vec2 EggSoldier::GetCenter() const
 {
 	return( pos + Vec2( size ) / 2.0f );
+}
+
+int EggSoldier::LookDir() const
+{
+	if( vel.x == 0 ) return( 0 );
+	else return( int( vel.x / abs( vel.x ) ) );
+}
+
+bool EggSoldier::IsLookingLeft() const
+{
+	return( LookDir() < 0 );
 }

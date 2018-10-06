@@ -8,9 +8,9 @@ Player::Player( const Vec2& pos,const Collideable& coll,
 	coll( coll ),
 	hitbox( pos,float( size.x ),float( size.y ) ),
 	myBullets( bullets ),
-	shotTimer( refireTime )
-{
-}
+	shotTimer( refireTime ),
+	walk( 0,0,size.x,size.y,4,*sprSheet,0.2f )
+{}
 
 void Player::Update( const Keyboard& kbd,const Mouse& ms,
 	const TileMap& map,const Collideable& coll,float dt )
@@ -27,12 +27,17 @@ void Player::Update( const Keyboard& kbd,const Mouse& ms,
 	if( kbd.KeyIsPressed( 'A' ) )
 	{
 		--moveDir.x;
+		lookingLeft = true;
 	}
 	if( kbd.KeyIsPressed( 'D' ) )
 	{
 		++moveDir.x;
+		lookingLeft = false;
 	}
 	moveDir = moveDir.GetNormalized() * speed * dt;
+
+	if( moveDir.GetLengthSq() != 0.0f ) walk.Update( dt );
+	else walk.SetFrame( 0 );
 
 	// coll.CheckCollision( pos,moveDir );
 	coll.CheckCollisionRect( pos,hitbox,moveDir );
@@ -46,7 +51,8 @@ void Player::Update( const Keyboard& kbd,const Mouse& ms,
 		shotTimer.Reset();
 
 		myBullets.emplace_back( Bullet{ pos,
-			Vec2( ms.GetPos() ),bulletSpeed } );
+			Vec2( ms.GetPos() ),bulletSpeed,
+			Bullet::Team::Player } );
 	}
 }
 
@@ -55,8 +61,13 @@ void Player::Draw( Graphics& gfx ) const
 	const auto drawPos = Vei2( GetCenter() );
 	// gfx.DrawRect( drawPos.x,drawPos.y,
 	// 	size.x,size.y,Colors::Green );
-	gfx.DrawSprite( drawPos.x,drawPos.y,*mySpr,
-		SpriteEffect::Chroma{ Colors::Magenta } );
+
+	// gfx.DrawSprite( drawPos.x,drawPos.y,*mySpr,
+	// 	SpriteEffect::Chroma{ Colors::Magenta } );
+
+	walk.Draw( drawPos,gfx,
+		SpriteEffect::Chroma{ Colors::Magenta },
+		lookingLeft );
 }
 
 void Player::Attack( const Vec2& AttackSource )
