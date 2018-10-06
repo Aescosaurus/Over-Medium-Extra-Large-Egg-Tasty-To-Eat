@@ -151,16 +151,28 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 	bullets.clear();
 	enemyBullets.clear();
 
+	// All egg enemy stuff.
+	eggs.clear(); // Should be empty anyway, but if you
+	//  skip levels it won't be so do this just in case.
+	
 	// Create all egg soldier enemies.
-	eggs.clear(); // Should be empty anyway, but if you skip levels it won't be.
-	const auto list = tiles.FindAllInstances( nextLevel,
+	const auto enemyList = tiles.FindAllInstances( nextLevel,
 		TileMap::Token::Enemy );
-	for( const Vei2& thePos : list )
+	for( const Vei2& thePos : enemyList )
 	{
 		// enemies.emplace_back( Enemy{ Vec2( thePos ),
 		// 	tiles,coll,enemyBullets } );
 		eggs.emplace_back( new EggSoldier{ thePos,tiles,coll,enemyBullets } );
 	}
+
+	// Eggsploder enemy type.
+	const auto eggsploderList = tiles.FindAllInstances( nextLevel,
+		TileMap::Token::Eggsploder );
+	for( const Vei2& thePos : eggsploderList )
+	{
+		eggs.emplace_back( new Eggsploder{ thePos,tiles,coll } );
+	}
+
 
 	// Create all key walls.
 	keyWalls.clear();

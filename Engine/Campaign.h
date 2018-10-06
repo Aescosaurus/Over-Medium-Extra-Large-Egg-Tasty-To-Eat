@@ -14,6 +14,7 @@
 #include "DeathBall.h"
 #include <memory>
 #include "EggSoldier.h"
+#include "Eggsploder.h"
 
 class Campaign
 {

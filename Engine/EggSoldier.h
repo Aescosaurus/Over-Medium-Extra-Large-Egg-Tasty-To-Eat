@@ -29,6 +29,7 @@ private:
 	Vec2 GetCenter() const;
 private:
 	static constexpr Vei2 size = { 64,64 };
+	static constexpr int myHP = 5;
 	Vei2 target;
 	Vec2 vel;
 	bool didCollide = false;

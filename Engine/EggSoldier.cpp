@@ -5,7 +5,7 @@
 EggSoldier::EggSoldier( const Vec2& pos,const TileMap& map,
 	const Collideable& coll,std::vector<Bullet>& bullets )
 	:
-	EnemyBase( pos,size,map,coll,5 ),
+	EnemyBase( pos,size,map,coll,myHP ),
 	myBullets( bullets ),
 	shotTimer( 1.1f ),
 	legsRunning( 0,16 * 4,size.x,size.y,8,*spriteSheet,0.2f )

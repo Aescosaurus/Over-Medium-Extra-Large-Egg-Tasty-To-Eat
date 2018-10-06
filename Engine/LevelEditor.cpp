@@ -68,6 +68,7 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	deathBall.Update( ms );
 	lSpikeWall.Update( ms );
 	rSpikeWall.Update( ms );
+	eggsploder.Update( ms );
 
 	if( saveMap.IsDown() ) PublishLevel();
 	else if( floor.IsDown() ) brush = Tile2Char::Empty;
@@ -80,6 +81,7 @@ void LevelEditor::Update( const Mouse& ms,const Keyboard& kbd )
 	else if( deathBall.IsDown() ) brush = Tile2Char::DeathBall;
 	else if( lSpikeWall.IsDown() ) brush = Tile2Char::SpikeWallLeft;
 	else if( rSpikeWall.IsDown() ) brush = Tile2Char::SpikeWallRight;
+	else if( eggsploder.IsDown() ) brush = Tile2Char::Eggsploder;
 
 	if( ms.LeftIsPressed() && wndRect.ContainsPoint( ms.GetPos() ) )
 	{
@@ -114,12 +116,25 @@ void LevelEditor::Draw( Graphics& gfx ) const
 	std::vector<AnimToDraw> animsToDraw;
 
 	const auto chroma = SpriteEffect::Chroma{ Colors::Magenta };
+	const auto copy = SpriteEffect::Copy{};
+
+	// This is probably inefficient and slow but is easier
+	//  than the alternative and won't matter in release.
+	for( int y = 0; y < nTiles.y; ++y )
+	{
+		for( int x = 0; x < nTiles.x; ++x )
+		{
+			gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
+				floorSpr,copy,false );
+		}
+	}
 
 	for( int y = 0; y < nTiles.y; ++y )
 	{
 		for( int x = 0; x < nTiles.x; ++x )
 		{
-			bool drawingFloor = true;
+			// bool drawingFloor = true;
+			bool drawingWall = false;
 			// gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
 			// 	floorSpr,
 			// 	SpriteEffect::Copy{} );
@@ -137,7 +152,9 @@ void LevelEditor::Draw( Graphics& gfx ) const
 						Vei2{ ( x * tileSize.x ) + tileOffset.x,
 						( y * tileSize.y ) + tileOffset.y },
 						IsFlipped( curTile ) } );
-					drawingFloor = false;
+
+					// drawingFloor = false;
+					drawingWall = true;
 				}
 				else
 				{
@@ -152,7 +169,8 @@ void LevelEditor::Draw( Graphics& gfx ) const
 
 				if( drawSurf != &floorSpr )
 				{
-					drawingFloor = false;
+					// drawingFloor = false;
+					drawingWall = false;
 
 					gfx.DrawSprite( ( x * tileSize.x ) + tileOffset.x,
 						( y * tileSize.y ) + tileOffset.y,
@@ -162,12 +180,12 @@ void LevelEditor::Draw( Graphics& gfx ) const
 				}
 			}
 			
-			const auto& curDrawSpr = ( drawingFloor )
-				? floorSpr : wallSpr;
-
-			gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
-				curDrawSpr,
-				SpriteEffect::Copy{} );
+			if( drawingWall )
+			{
+				gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
+					wallSpr,
+					SpriteEffect::Copy{} );
+			}
 		}
 	}
 
@@ -190,6 +208,7 @@ void LevelEditor::Draw( Graphics& gfx ) const
 	deathBall.Draw( gfx,false );
 	lSpikeWall.Draw( gfx,false );
 	rSpikeWall.Draw( gfx,true );
+	eggsploder.Draw( gfx );
 
 	Rect brushRect;
 	if( IsAnim( brush ) )
@@ -325,6 +344,8 @@ const Surface* const LevelEditor::Tile2Surf( Tile2Char tileType ) const
 		return( &spikeWallSpr );
 	case Tile2Char::SpikeWallRight:
 		return( &spikeWallSpr );
+	case Tile2Char::Eggsploder:
+		return( &eggsploderSpr );
 	default:
 		// You will never get this!
 		assert( false );

@@ -78,7 +78,8 @@ void TileMap::LoadFile( const std::string& fileName )
 				c == char( Token::KeyWall ) ||
 				c == char( Token::Key ) ||
 				// No spiked walls cuz I want those to act like walls.
-				c == char( Token::DeathBall ) )
+				c == char( Token::DeathBall ) ||
+				c == char( Token::Eggsploder ) )
 			{
 				tiles.emplace_back( TileType::Empty );
 			}

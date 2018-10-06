@@ -188,6 +188,7 @@
     <ClCompile Include="DeathBall.cpp" />
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="EggSoldier.cpp" />
+    <ClCompile Include="Eggsploder.cpp" />
     <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FrameTimer.cpp" />

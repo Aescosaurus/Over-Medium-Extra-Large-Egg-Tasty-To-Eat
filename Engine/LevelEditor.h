@@ -25,7 +25,8 @@ private:
 		Key = int( 'K' ),
 		SpikeWallLeft = int( 'Y' ),
 		SpikeWallRight = int( 'T' ),
-		DeathBall = int( 'B' )
+		DeathBall = int( 'B' ),
+		Eggsploder = int( 'G' )
 	};
 public:
 	LevelEditor();
@@ -58,12 +59,13 @@ private:
 	const Surface floorSpr = { "Images/Floor.bmp",4,4 };
 	const Surface wallSpr = { "Images/Wall1.bmp",4,4 };
 	const Surface playerSpr = { "Images/Player.bmp",4,4 };
-	const Surface enemySpr = { { "Images/EggEnemyAnim.bmp",RectI{ { 0,0 },16,16 } },4,4 };
+	const Surface enemySpr = { { "Images/EggEnemyAnim.bmp",RectI{ { 0,0 },16,16 } },2,2 };
 	const Surface stairsSpr = { "Images/Stairs.bmp",4,4 };
 	const Surface keyWallSpr = { "Images/KeyWall.bmp",4,4 };
 	const Surface keySpr = { "Images/Key.bmp",4,4 };
 	const Surface deathBallSpr = { "Images/DeathBallAnim.bmp",4,4 };
 	const Surface spikeWallSpr = { "Images/SpikeWallAnim.bmp",4,4 };
+	const Surface eggsploderSpr = { { "Images/EggsploderAnim.bmp",RectI{ { 0,0 },8,8 } },4,4 };
 
 	static constexpr Vei2 menuCenter = { Graphics::GameScreenWidth +
 		( Graphics::ScreenWidth - Graphics::GameScreenWidth ) / 2,0 };
@@ -92,6 +94,7 @@ private:
 	AnimButton deathBall = { menuCenter + qMenuW + Vei2( 0,start + mPadding * 4 + bBSize + sBSize * 2 ),deathBallAnim };
 	AnimButton lSpikeWall = { menuCenter - qMenuW + Vei2( 0,start + mPadding * 5 + bBSize + sBSize * 3 ),spikeWallAnim };
 	AnimButton rSpikeWall = { menuCenter + qMenuW + Vei2( 0,start + mPadding * 5 + bBSize + sBSize * 3 ),spikeWallAnim };
+	ImageButton eggsploder = { menuCenter - qMenuW + Vei2( 0,start + mPadding * 6 + bBSize + sBSize * 4 ),eggsploderSpr };
 	// Man that was gross let's hope I come up with a better way to do this next time.
 
 	static constexpr RectI wndRect = { { 0,0 },Graphics::GameScreenWidth,Graphics::GameScreenHeight };

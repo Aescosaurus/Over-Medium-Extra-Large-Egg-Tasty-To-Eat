@@ -230,6 +230,9 @@
     <ClCompile Include="EggSoldier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Eggsploder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FramebufferPS.hlsl">

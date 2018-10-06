@@ -121,7 +121,7 @@ Surface::Surface( const Surface& other,int width,int height )
 	:
 	Surface( other )
 {
-	*this = other.GetExpanded( width,height );
+	*this = other.GetExpandedBy( width,height );
 }
 
 Surface::Surface( Surface&& donor )
