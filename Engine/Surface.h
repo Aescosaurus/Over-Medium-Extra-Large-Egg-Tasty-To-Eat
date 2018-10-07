@@ -16,6 +16,7 @@ public:
 	// Gives a surface loaded from filename expanded to xAmount and yAmount.
 	Surface( const std::string& filename,int xAmount,int yAmount );
 	Surface( const Surface& other,int width,int height );
+	Surface( const Surface& other,bool xFlipped );
 
 	Surface( const Surface& ) = default;
 	Surface& operator=( const Surface& ) = default;
@@ -43,11 +44,13 @@ public:
 	int GetHeight() const;
 	Vei2 GetSize() const;
 	RectI GetRect() const;
+
 	// Expand to width and height.  Must be multiples of original.
 	Surface GetExpanded( int width,int height ) const;
 	// Expand by xFactor and yFactor.
 	Surface GetExpandedBy( int xFactor,int yFactor ) const;
 	Surface GetInterpolated( int width,int height ) const;
+	Surface GetXReversed() const;
 private:
 	std::vector<Color> pixels;
 	int width;

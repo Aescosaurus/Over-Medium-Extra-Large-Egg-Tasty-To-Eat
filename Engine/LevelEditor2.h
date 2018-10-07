@@ -48,11 +48,14 @@ private:
 	TileType brush = TileType::Wall;
 	Vei2 brushPos = { 0,0 };
 
+	// TODO: Make this hold a TileType, then a type that holds a surface AND a button
 	std::map<TileType,const Surface> surfs;
 
 	static constexpr Vei2 start = { Graphics::GameScreenWidth,64 };
-	std::vector<ImageButton> buttons;
+	// std::vector<ImageButton> buttons;
+	std::map<TileType,ImageButton> buttons;
 
+	// TODO: Put this in graphics as Graphics::GetWndRect()
 	static constexpr RectI wndRect = { { 0,0 },Graphics::GameScreenWidth,Graphics::GameScreenHeight };
 
 	float fadeProgress = 0.0f;

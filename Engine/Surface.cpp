@@ -124,6 +124,13 @@ Surface::Surface( const Surface& other,int width,int height )
 	*this = other.GetExpandedBy( width,height );
 }
 
+Surface::Surface( const Surface& other,bool xFlipped )
+	:
+	Surface( other.width,other.height )
+{
+	*this = other.GetXReversed();
+}
+
 Surface::Surface( Surface&& donor )
 {
 	*this = std::move( donor );
@@ -253,4 +260,22 @@ Surface Surface::GetInterpolated( int width,int height ) const
 		}
 	}
 	return newImage;
+}
+
+Surface Surface::GetXReversed() const
+{
+	Surface temp = Surface{ width,height };
+
+	for( int y = 0; y < height; ++y )
+	{
+		int otherX = 0;
+		// Loop in reverse x.
+		for( int x = width - 1; x >= 0; --x )
+		{
+			temp.PutPixel( otherX,y,GetPixel( x,y ) );
+			++otherX;
+		}
+	}
+
+	return( temp );
 }

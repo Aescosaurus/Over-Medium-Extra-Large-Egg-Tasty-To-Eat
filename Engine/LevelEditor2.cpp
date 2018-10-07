@@ -32,7 +32,7 @@ LevelEditor2::LevelEditor2()
 	surfs.insert( { TileType::KeyWall,{ "Images/KeyWall.bmp",4,4 } } );
 	surfs.insert( { TileType::Key,{ "Images/Key.bmp",4,4 } } );
 	surfs.insert( { TileType::SpikeWallLeft,{ { "Images/SpikeWallAnim.bmp",RectI{ 40,50,0,10 } },4,4 } } );
-	surfs.insert( { TileType::SpikeWallRight,{ { "Images/SpikeWallAnim.bmp",RectI{ 40,50,0,10 } },4,4 } } );
+	surfs.insert( { TileType::SpikeWallRight,{ { { "Images/SpikeWallAnim.bmp",RectI{ 40,50,0,10 } },4,4 },false } } );
 
 	// TODO: Find a way to place these really really easily.
 	// pos = { start.x,start.x }
@@ -48,26 +48,26 @@ LevelEditor2::LevelEditor2()
 	static constexpr Vei2 buttonSize = { 48,48 };
 	Vei2 pos = start - xAdd + Vei2{ 1,0 };
 
-	buttons.emplace_back( ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Empty ) } );
-	buttons.emplace_back( ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Wall ) } );
-	buttons.emplace_back( ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Player ) } );
-	buttons.emplace_back( ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Stairs ) } );
+	buttons.insert( { TileType::Empty,ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Empty ) } } );
+	buttons.insert( { TileType::Wall,ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Wall ) } } );
+	buttons.insert( { TileType::Player,ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Player ) } } );
+	buttons.insert( { TileType::Stairs,ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Stairs ) } } );
 
 	pos.x = start.x - xAdd.x + 1;
 	pos += yAdd;
 
-	buttons.emplace_back( ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::EggSoldier ) } );
-	buttons.emplace_back( ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Eggsploder ) } );
+	buttons.insert( { TileType::EggSoldier,ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::EggSoldier ) } } );
+	buttons.insert( { TileType::Eggsploder,ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Eggsploder ) } } );
 	pos += xAdd;
 	pos += xAdd;
 
 	pos.x = start.x - xAdd.x + 1;
 	pos += yAdd;
 
-	buttons.emplace_back( ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::KeyWall ) } );
-	buttons.emplace_back( ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Key ) } );
-	buttons.emplace_back( ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::SpikeWallLeft ) } );
-	buttons.emplace_back( ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::SpikeWallRight ) } );
+	buttons.insert( { TileType::KeyWall,ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::KeyWall ) } } );
+	buttons.insert( { TileType::Key,ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::Key ) } } );
+	buttons.insert( { TileType::SpikeWallLeft,ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::SpikeWallLeft ) } }  );
+	buttons.insert( { TileType::SpikeWallRight,ImageButton{ pos += xAdd,buttonSize,surfs.at( TileType::SpikeWallRight ) } } );
 }
 
 void LevelEditor2::Update( const Mouse& ms )
@@ -82,9 +82,22 @@ void LevelEditor2::Update( const Mouse& ms )
 
 	brushPos = tempPos;
 
-	// (update buttons)
+	for( auto& b : buttons ) b.second.Update( ms );
 
-	// (check button presses)
+	if( buttons.at( TileType::Empty ).IsDown() ) brush = TileType::Empty;
+	else if( buttons.at( TileType::Wall ).IsDown() ) brush = TileType::Wall;
+	else if( buttons.at( TileType::Player ).IsDown() ) brush = TileType::Player;
+	else if( buttons.at( TileType::Stairs ).IsDown() ) brush = TileType::Stairs;
+
+	else if( buttons.at( TileType::EggSoldier ).IsDown() ) brush = TileType::EggSoldier;
+	else if( buttons.at( TileType::Eggsploder ).IsDown() ) brush = TileType::Eggsploder;
+	// 
+	// 
+
+	else if( buttons.at( TileType::KeyWall ).IsDown() ) brush = TileType::KeyWall;
+	else if( buttons.at( TileType::Key ).IsDown() ) brush = TileType::Key;
+	else if( buttons.at( TileType::SpikeWallLeft ).IsDown() ) brush = TileType::SpikeWallLeft;
+	else if( buttons.at( TileType::SpikeWallRight ).IsDown() ) brush = TileType::SpikeWallRight;
 
 	if( ms.LeftIsPressed() && wndRect.ContainsPoint( ms.GetPos() ) )
 	{
@@ -112,18 +125,35 @@ void LevelEditor2::Draw( Graphics& gfx ) const
 	{
 		for( int x = 0; x < nTiles.x; ++x )
 		{
+			// Cache x and y drawing pos in real pixels,
+			//  probably would get optimized if I didn't
+			//  do this but it saves me typing so I like.
+			const auto xPos = x * tileSize.x;
+			const auto yPos = y * tileSize.y;
+
+			// Draw the floor sprite underneath everything.
+			gfx.DrawSprite( xPos,yPos,
+				surfs.at( TileType::Empty ),
+				copy,false );
+
+			// Get the current tile and surface to draw.
 			const auto curTile = GetTile( x,y );
 			const auto& curSurf = surfs.at( curTile );
 
-			gfx.DrawSprite( x * tileSize.x,y * tileSize.y,
-				curSurf,copy,false );
+			// Draw what's actually on this tile.
+			gfx.DrawSprite( xPos,yPos,
+				curSurf,chroma,false );
 		}
 	}
+
+	// Draw tile type on top of mouse.
+	gfx.DrawSprite( brushPos.x,brushPos.y,
+		surfs.at( brush ),chroma );
 
 	// Draw Buttons.
 	for( const auto& b : buttons )
 	{
-		b.Draw( gfx );
+		b.second.Draw( gfx );
 	}
 }
 
