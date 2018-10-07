@@ -48,6 +48,8 @@ class ImageButton
 {
 public:
 	ImageButton( const Vei2& center,const Surface& image );
+	ImageButton( const Vei2& pos,const Vei2& size,
+		const Surface& image );
 
 	void Draw( Graphics& gfx ) const override;
 	virtual void Draw( Graphics& gfx,bool flipped ) const;

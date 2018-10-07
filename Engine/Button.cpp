@@ -68,6 +68,13 @@ ImageButton::ImageButton( const Vei2& center,const Surface& image )
 	mySpr( image )
 {}
 
+ImageButton::ImageButton( const Vei2& pos,const Vei2& size,
+	const Surface& image )
+	:
+	Button( pos,size ),
+	mySpr( image )
+{}
+
 void ImageButton::Draw( Graphics& gfx ) const
 {
 	Draw( gfx,false );

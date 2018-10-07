@@ -61,7 +61,7 @@ void Game::UpdateModel()
 	case GameState::Unlimited:
 		break;
 	case GameState::LevelEditor:
-		theLevelEditor.Update( wnd.mouse,wnd.kbd );
+		theLevelEditor.Update( wnd.mouse );
 		if( theLevelEditor.CheckReturning( wnd.mouse ) )
 		{
 			curState = GameState::Menu;

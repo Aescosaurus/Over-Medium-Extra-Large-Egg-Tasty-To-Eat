@@ -8,14 +8,14 @@ SpikeWall::SpikeWall( const Vei2& pos,Dir facingDir )
 	shootSpikes( 0,0,size.x,size.y,5,*sprSheet,0.2f ),
 	hitbox( pos,float( size.x ),float( size.y ) )
 {
-	if( myDir == Dir::Left )
-	{
-		hitbox.MoveTo( pos - Vec2( float( size.x ),0.0f ) );
-	}
-	else
-	{
-		hitbox.MoveTo( pos + Vec2( float( size.x ),0.0f ) );
-	}
+	// if( myDir == Dir::Left )
+	// {
+	// 	hitbox.MoveTo( pos - Vec2( float( size.x ),0.0f ) );
+	// }
+	// else
+	// {
+	// 	hitbox.MoveTo( pos + Vec2( float( size.x ),0.0f ) );
+	// }
 }
 
 void SpikeWall::Update( const Rect& guyRect,float dt )
@@ -41,19 +41,25 @@ void SpikeWall::Draw( Graphics& gfx ) const
 {
 	if( spiking )
 	{
+		bool willFlip = false;
 		if( myDir == Dir::Left )
 		{
-			shootSpikes.Draw( pos - Vei2( size.x,0 ),gfx,
-				SpriteEffect::Chroma{ Colors::Magenta },true );
+			// shootSpikes.Draw( pos - Vei2( size.x,0 ),gfx,
+			// 	SpriteEffect::Chroma{ Colors::Magenta },true );
+			willFlip = true;
 		}
 		else
 		{
-			shootSpikes.Draw( pos + Vei2( size.x,0 ),gfx,
-				SpriteEffect::Chroma{ Colors::Magenta },false );
+			// shootSpikes.Draw( pos + Vei2( size.x,0 ),gfx,
+			// 	SpriteEffect::Chroma{ Colors::Magenta },false );
+			willFlip = false;
 		}
+		shootSpikes.Draw( pos,gfx,
+			SpriteEffect::Chroma{ Colors::Magenta },
+			willFlip );
 	}
 
-	// gfx.DrawHitbox( hitbox );
+	gfx.DrawHitbox( hitbox );
 }
 
 Vec2 SpikeWall::GetPos() const
