@@ -26,7 +26,7 @@
 
 #include "Button.h"
 #include "Campaign.h"
-#include "LevelEditor2.h"
+#include "LevelEditor.h"
 
 class Game
 {
@@ -55,7 +55,7 @@ private:
 	};
 	GameState curState = GameState::Menu;
 	Campaign theMainGame;
-	LevelEditor2 theLevelEditor;
+	LevelEditor theLevelEditor;
 
 	const Vei2 scrCenter = Graphics::GetScreenRect().GetCenter();
 	Button playCampaign = { scrCenter - Vei2{ 0,200 },"Play Campaign" };

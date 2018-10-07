@@ -8,33 +8,32 @@
 class Surface
 {
 public:
-	Surface( const std::string& filename );
-	Surface( const std::wstring& fileName );
-	Surface( const Surface& other,const RectI& clip );
-	Surface( const std::string& fileName,const RectI& clip );
+	// Create blank surface with width and height.
 	Surface( int width,int height );
-	// Gives a surface loaded from filename expanded to xAmount and yAmount.
-	Surface( const std::string& filename,int xAmount,int yAmount );
-	Surface( const Surface& other,int width,int height );
-	Surface( const Surface& other,bool xFlipped );
+	// Load a bitmap(.bmp) file with filename into surface.
+	Surface( const std::string& filename );
+	// Create a new surface from a clip of other.
+	Surface( const Surface& other,const RectI& clip );
+	// Create a new surface that is other expanded by expandedSize.
+	Surface( const Surface& other,const Vei2& expandSize );
+	// Create a new surface that is other but flipped over y or x axis.
+	Surface( const Surface& other,bool xFlipped,bool yFlipped );
+public:
+	// Surface( const std::string& filename );
+	// Surface( const std::wstring& fileName );
+	// Surface( const Surface& other,const RectI& clip );
+	// Surface( const std::string& fileName,const RectI& clip );
+	// Surface( int width,int height );
+	// // Gives a surface loaded from filename expanded to xAmount and yAmount.
+	// Surface( const std::string& filename,int xAmount,int yAmount );
+	// Surface( const Surface& other,int width,int height );
+	// Surface( const Surface& other,bool xFlipped );
 
 	Surface( const Surface& ) = default;
 	Surface& operator=( const Surface& ) = default;
 	
 	Surface( Surface&& donor );
 	Surface& operator=( Surface&& rhs );
-
-	template<typename E>
-	void Draw( const Vei2& pos,class Graphics& gfx,E effect,bool reversed = false ) const
-	{
-		Draw( pos,gfx,effect,reversed );
-	}
-	template<typename E>
-	void Draw( const Vei2& pos,class Graphics& gfx,const RectI& clip,E effect,bool reversed = false ) const
-	{
-		gfx.DrawSprite( pos.x,pos.y,GetRect(),Graphics::GetScreenRect(),
-			*this,E,reversed );
-	}
 
 	void PutPixel( int x,int y,Color c );
 	void DrawRect( int x,int y,int width,int height,Color c );
@@ -45,12 +44,16 @@ public:
 	Vei2 GetSize() const;
 	RectI GetRect() const;
 
-	// Expand to width and height.  Must be multiples of original.
-	Surface GetExpanded( int width,int height ) const;
-	// Expand by xFactor and yFactor.
-	Surface GetExpandedBy( int xFactor,int yFactor ) const;
-	Surface GetInterpolated( int width,int height ) const;
+	// Expand a surface by amount.
+	Surface GetExpandedBy( const Vei2& amount ) const;
+	// Bilinearly interpolate a surface to be width wide and height high.
+	Surface GetInterpolatedTo( int width,int height ) const;
+	// Get a surface flipped over the y axis.
 	Surface GetXReversed() const;
+	// Get a surface flipped over the x axis.
+	Surface GetYReversed() const;
+	// Get a clipped area from a surface.
+	Surface GetClipped( const RectI& clip ) const;
 private:
 	std::vector<Color> pixels;
 	int width;

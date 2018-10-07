@@ -82,7 +82,7 @@ private:
 		);
 		if( i == entries.end() || i->key != key )
 		{
-			i = entries.emplace( i,key,new Surface( key,expandedSize.x,expandedSize.y ) );
+			i = entries.emplace( i,key,new Surface{ key,expandedSize } );
 		}
 		return i->pResource;
 	}

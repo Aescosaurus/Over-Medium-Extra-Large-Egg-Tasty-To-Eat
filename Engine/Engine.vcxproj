@@ -160,7 +160,6 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="KeyWall.h" />
     <ClInclude Include="LevelEditor.h" />
-    <ClInclude Include="LevelEditor2.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Player.h" />
@@ -199,7 +198,6 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="KeyWall.cpp" />
     <ClCompile Include="LevelEditor.cpp" />
-    <ClCompile Include="LevelEditor2.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />

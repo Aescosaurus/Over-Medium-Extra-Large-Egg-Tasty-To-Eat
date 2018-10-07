@@ -59,7 +59,7 @@ void SpikeWall::Draw( Graphics& gfx ) const
 			willFlip );
 	}
 
-	gfx.DrawHitbox( hitbox );
+	// gfx.DrawHitbox( hitbox );
 }
 
 Vec2 SpikeWall::GetPos() const

@@ -245,7 +245,7 @@ void Graphics::JSDrawImage( const Surface& image,int sx,int sy,int sWidth,int sH
 	int dx,int dy,int dWidth,int dHeight )
 {
 	const Rect clipRect = RectI( sx,( sx + sWidth ),sy,( sy + sHeight ) );
-	const Surface enlarged = image.GetInterpolated( dWidth,dHeight );
+	const Surface enlarged = image.GetInterpolatedTo( dWidth,dHeight );
 
 	DrawSprite( dx,dy,clipRect,GetScreenRect(),enlarged,SpriteEffect::Copy(),false );
 }

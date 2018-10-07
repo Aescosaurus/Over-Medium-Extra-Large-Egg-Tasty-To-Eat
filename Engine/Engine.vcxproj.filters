@@ -123,9 +123,6 @@
     <ClInclude Include="Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DeathBall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -141,7 +138,7 @@
     <ClInclude Include="EggSoldier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor2.h">
+    <ClInclude Include="LevelEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -218,9 +215,6 @@
     <ClCompile Include="Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SpikeWall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -236,7 +230,7 @@
     <ClCompile Include="Eggsploder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor2.cpp">
+    <ClCompile Include="LevelEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
