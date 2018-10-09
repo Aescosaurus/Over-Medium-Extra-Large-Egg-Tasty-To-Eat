@@ -7,8 +7,10 @@ Bullet::Bullet( const Vec2& pos,const Vec2& target,
 	pos( pos ),
 	vel( ( target - pos ).GetNormalized() * speed ),
 	hitbox( pos,float( size.x ),float( size.y ) ),
-	rotate( 0,( myTeam == Team::Player ) ? 0 : size.y,
-		size.x,size.y,4,*sprSheet,0.2f ),
+	// rotate( 0,( myTeam == Team::Player ) ? 0 : size.y,
+	// 	size.x,size.y,4,*sprSheet,0.2f ),
+	rotate( 0,size.x * int( myTeam ),size.x,size.y,
+		4,*sprSheet,0.2f ),
 	myTeam( myTeam )
 {}
 
@@ -80,7 +82,32 @@ const Rect& Bullet::GetRect() const
 	return( hitbox );
 }
 
+void Bullet::MoveTo( const Vec2& movedTo )
+{
+	pos = movedTo;
+}
+
 Vec2 Bullet::GetCenter() const
 {
 	return( pos - Vec2( size ) / 2.0f );
+}
+
+SpellBullet::SpellBullet( const Vec2& pos )
+	:
+	Bullet( pos,pos,0.0f,Team::Spell ),
+	t( cycleTime ),
+	startPos( pos )
+{}
+
+void SpellBullet::Update( const TileMap& map,float dt )
+{
+	Bullet::Update( map,dt );
+
+	Vec2 updatedPos = { amplitude.x * cos( t.GetPercent() *
+		freq * deg2rad ) + startPos.x,
+		amplitude.y * sin( t.GetPercent() *
+		freq * 2.0f * deg2rad ) + startPos.y };
+
+	t.Update( dt );
+	if( t.IsDone() ) t.Reset();
 }

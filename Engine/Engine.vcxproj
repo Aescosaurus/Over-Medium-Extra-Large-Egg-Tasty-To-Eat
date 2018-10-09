@@ -149,6 +149,7 @@
     <ClInclude Include="DeathBall.h" />
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="EggSoldier.h" />
+    <ClInclude Include="EggSpellcaster.h" />
     <ClInclude Include="Eggsploder.h" />
     <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="FileIO.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="DeathBall.cpp" />
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="EggSoldier.cpp" />
+    <ClCompile Include="EggSpellcaster.cpp" />
     <ClCompile Include="Eggsploder.cpp" />
     <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="Font.cpp" />

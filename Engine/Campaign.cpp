@@ -74,12 +74,12 @@ void Campaign::UpdateAll( const Keyboard& kbd,
 
 	for( auto& eb : enemyBullets )
 	{
-		eb.Update( tiles,dt );
+		eb->Update( tiles,dt );
 
-		if( guyRect.IsOverlappingWith( eb.GetRect() ) )
+		if( guyRect.IsOverlappingWith( eb->GetRect() ) )
 		{
-			guy.Attack( eb.GetPos() );
-			eb.Kill();
+			guy.Attack( eb->GetPos() );
+			eb->Kill();
 		}
 	}
 
@@ -129,7 +129,7 @@ void Campaign::DrawAll()
 
 	for( const auto& e : eggs ) e->Draw( gfx );
 
-	for( const auto& b : enemyBullets ) b.Draw( gfx );
+	for( const auto& b : enemyBullets ) b->Draw( gfx );
 
 	for( const auto& b : bullets ) b.Draw( gfx );
 
@@ -170,6 +170,13 @@ void Campaign::ChangeLevel( const std::string& nextLevel )
 		eggs.emplace_back( new Eggsploder{ thePos,tiles,coll } );
 	}
 
+	// Egg Spellcaster enemy type.
+	const auto eggSpellcasterList = tiles.FindAllInstances( nextLevel,
+		TileMap::Token::EggSpellcaster );
+	for( const Vei2& thePos : eggSpellcasterList )
+	{
+		eggs.emplace_back( new EggSpellcaster{ thePos,tiles,coll,enemyBullets } );
+	}
 
 	// Create all key walls.
 	keyWalls.clear();

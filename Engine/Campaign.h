@@ -15,6 +15,7 @@
 #include <memory>
 #include "EggSoldier.h"
 #include "Eggsploder.h"
+#include "EggSpellcaster.h"
 
 class Campaign
 {
@@ -41,7 +42,7 @@ private:
 	// std::vector<Enemy> enemies;
 	std::vector<std::unique_ptr<EnemyBase>> eggs;
 	std::vector<Bullet> bullets;
-	std::vector<Bullet> enemyBullets;
+	std::vector<std::unique_ptr<Bullet>> enemyBullets;
 	std::vector<KeyWall> keyWalls;
 	std::vector<SpikeWall> spikeWalls;
 	// std::vector<DeathBall> deathBalls;

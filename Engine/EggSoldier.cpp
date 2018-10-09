@@ -3,7 +3,7 @@
 #include "SpriteEffect.h"
 
 EggSoldier::EggSoldier( const Vec2& pos,const TileMap& map,
-	const Collideable& coll,std::vector<Bullet>& bullets )
+	const Collideable& coll,std::vector<std::unique_ptr<Bullet>>& bullets )
 	:
 	EnemyBase( pos,size,map,coll,myHP ),
 	myBullets( bullets ),
@@ -30,7 +30,7 @@ void EggSoldier::Update( const Vec2& playerPos,float dt )
 	{
 		shotTimer.Reset( Random::RangeF( minShotTime,maxShotTime ) );
 
-		myBullets.emplace_back( Bullet{ GetCenter() +
+		myBullets.emplace_back( new Bullet{ GetCenter() +
 			Vec2( Vei2{ LookDir() * size.x / 2,0 } ),
 			playerPos,bulletSpeed,Bullet::Team::Enemy } );
 	}

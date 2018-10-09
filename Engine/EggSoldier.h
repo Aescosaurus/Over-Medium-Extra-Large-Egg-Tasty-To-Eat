@@ -6,6 +6,7 @@
 #include <vector>
 #include "Anim.h"
 #include "Codex.h"
+#include <memory>
 
 class EggSoldier
 	:
@@ -14,7 +15,7 @@ class EggSoldier
 public:
 	EggSoldier() = delete;
 	EggSoldier( const Vec2& pos,const TileMap& map,
-		const Collideable& coll,std::vector<Bullet>& bullets );
+		const Collideable& coll,std::vector<std::unique_ptr<Bullet>>& bullets );
 
 	void Update( const Vec2& playerPos,float dt ) override;
 	void Draw( Graphics& gfx ) const override;
@@ -37,7 +38,7 @@ private:
 	bool didCollide = false;
 	static constexpr float speed = 90.0f;
 	static constexpr float range = 15.0f;
-	std::vector<Bullet>& myBullets; // make sure this is a ref lol
+	std::vector<std::unique_ptr<Bullet>>& myBullets; // make sure this is a ref lol
 	Timer shotTimer;
 	static constexpr float minShotTime = 1.4f;
 	static constexpr float maxShotTime = 2.1f;

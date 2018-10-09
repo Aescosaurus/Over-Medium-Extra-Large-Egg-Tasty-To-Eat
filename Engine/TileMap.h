@@ -25,7 +25,8 @@ public:
 		Key = int( 'K' ),
 		SpikeWallLeft = int( 'T' ),
 		SpikeWallRight = int( 'Y' ),
-		Eggsploder = int( 'G' )
+		Eggsploder = int( 'G' ),
+		EggSpellcaster = int( 'R' )
 	};
 public:
 	TileMap( const std::string& fileName );

@@ -79,7 +79,8 @@ void TileMap::LoadFile( const std::string& fileName )
 				c == char( Token::Key ) ||
 				c == char( Token::SpikeWallLeft ) ||
 				c == char( Token::SpikeWallRight ) ||
-				c == char( Token::Eggsploder ) )
+				c == char( Token::Eggsploder ) ||
+				c == char( Token::EggSpellcaster ) )
 			{
 				tiles.emplace_back( TileType::Empty );
 			}
